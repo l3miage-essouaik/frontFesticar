@@ -1,17 +1,19 @@
 <template>
     <div>
-        <h1>Hello panier</h1>
+        <SignUpModal></SignUpModal>
     </div>
 </template>
 
   
 <script>
+
+import SignUpModal from '@/components/modals/SignUpModal.vue';
+
 export default {
     name: 'PanierView',
-
-    created() {
-        console.log("yo");
-    }
+    components: {
+        SignUpModal
+    },
 };
 </script>
   
