@@ -1,13 +1,13 @@
 <template>
 <div class="signup-modal">
-    <div class="signup-container">
-        <div class="signup-content">
-            <div class="signup-header">
-                <h2 class="title">Inscrivez-vous à <span style="color: #F1CE53">Festicar</span></h2>
-                <button class="close-button">×</button>
-            </div>
-            <h3 class="text-connect">Vous avez déjà un compte ? <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="color: #007F5F">Se connecter</a></h3>
-            <div class="signup-content">
+    <div class="signup-content">
+        <div class="flex-container">
+            <div class="formContainer">
+                <div class="signup-header">
+                    <h2 class="title">Inscrivez-vous à <span style="color: #F1CE53">Festicar</span></h2>
+                    <button class="close-button">×</button>
+                </div>
+                <h3 class="text-connect">Vous avez déjà un compte ? <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="color: #007F5F">Se connecter</a></h3>
                 <form>
                     <div class="name-inputs">
                         <div class="input-group">
@@ -40,11 +40,11 @@
                     <button class="facebook-button">Continuer avec Facebook</button>
                 </div>
             </div>
+            <div class="signup-picture">
+                <!-- Add your picture here -->
+                <img src="../../assets/chat7a.png" alt="Signup Picture">
+            </div>
         </div>
-    </div>
-    <div class="signup-picture">
-      <!-- Add your picture here -->
-      <img src="../../assets/chat7a.png" alt="Signup Picture">
     </div>
 </div>
 </template>
@@ -82,10 +82,24 @@ export default {
 }
 
 .signup-header {
+    margin: 10%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+}
+
+img {
+    width: 370px;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.formContainer {
+    width: 60%;
 }
 
 .title {
