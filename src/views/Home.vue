@@ -1,26 +1,195 @@
 <template>
     <div>
-        <div class="grid grid-cols-3 gap-4">
-  <div class="...">01</div>
-  <div class="...">02</div>
-  <div class="...">03</div>
-  <div class="col-span-2 ...">04</div>
-  <div class="...">05</div>
-  <div class="...">06</div>
-  <div class="col-span-2 ...">07</div>
-</div>
+        <div class="bar">
+            <div class="location">
+                <p>Festival</p>
+                <!-- remove the outline from the input-->
+                <input type="text" placeholder="Rechercher un festival">
+            </div>
+            <div class="check-in">
+                <p>Date</p>
+                <input type="text" placeholder="Quand ?">
+            </div>
+            <div class="check-out">
+                <p>Ville</p>
+                <input type="text" placeholder="Où ?">
+            </div>
+            <div class="prix">
+                <p>Prix</p>
+                <input type="text" placeholder="Combien ?">
+            </div>
+            <div class="domain">
+                <p>Domaine</p>
+                    <input type="text" placeholder="Vous êtes fan de quoi ?">
+            </div>
+            <div class="icon">
+                <SearchIcon />
+            </div>
+        </div>
     </div>
 </template>
 
-  
 <script>
 export default {
     name: 'HomeView',
-    components: {
-    },
+    components: {},
 };
 </script>
-  
-<style>
-/* Vos styles ici */
+
+<style scoped>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    background: url("https://images.unsplash.com/photo-1580196969807-cc6de06c05be?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1579&q=80");
+    background-size: cover;
+    background-repeat: no-repeat;
+
+}
+
+
+
+.bar {
+    max-width: 1800px;
+    height: 69px !important;
+    background: white;
+    box-shadow: 0 0 5px hsl(0 0% 78%);
+    border-radius: 100vw;
+    display: flex;
+    justify-content: center;
+    font-size: 0.6rem;
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+    .bar {
+        width: 100%;
+    }
+}
+
+.bar div {
+    border-radius: inherit;
+    padding: 0.8rem 1.5rem;
+    transition: background 250ms ease;
+}
+
+.bar div:hover {
+    background: hsl(0 0% 94%);
+}
+
+.location {
+    width: 34%;
+}
+
+.icon {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.check-in,
+.check-out,
+.guests {
+    width: 22%;
+}
+
+input {
+    padding-right: 30px; /* Adjust the padding based on the size of your SearchIcon */
+}
+
+
+input[type="text"] {
+    background: none;
+    border: none;
+    padding: 0.2rem 0 0 0;
+    outline: none;
+    /* Ajoutez cette ligne pour désactiver l'outline par défaut */
+    box-shadow: none;
+    /* Ajoutez cette ligne pour désactiver le box-shadow par défaut */
+}
+
+input[type="text"]:focus {
+    box-shadow: none;
+    /* Assurez-vous que le box-shadow est désactivé lorsqu'en focus */
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-top: -15px;
+    margin-left: -24px;
+}
+
+
+::placeholder {
+    font-size: 0.75rem;
+}
+
+.domain {
+    align-items: center;
+    
+}
+
+.domain span {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: #FF385C;
+    color: white;
+    font-size: 0.8rem;
+    padding: 0.7rem;
+    border-radius: 50%;
+}
+
+.bar>div {
+    position: relative;
+}
+
+
+.bar>div::before {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 55%;
+    background: hsl(0 0% 90%);
+}
+
+.bar>div:nth-of-type(1)::before {
+    background: transparent;
+}
+
+
+.bar>div:hover::before {
+    background: transparent;
+}
+
+.search-icon {
+    position: absolute;
+    right: 5px; /* Adjust the right position based on your layout */
+    cursor: pointer;
+    /* Add any other styles you need for your SearchIcon */
+}
+
+
 </style>

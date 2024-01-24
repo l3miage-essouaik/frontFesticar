@@ -25,6 +25,9 @@ import CartIcon from '@/components/Icons/CartIcon.vue';
 app.component('CartIcon', CartIcon); 
 
 import UserIcon from '@/components/Icons/UserIcon.vue';
-app.component('UserIcon', UserIcon); 
+app.component('UserIcon', UserIcon);
+
+import SearchIcon from '@/components/Icons/SearchIcon.vue';
+app.component('SearchIcon', SearchIcon);
 
 app.mount('#app');
