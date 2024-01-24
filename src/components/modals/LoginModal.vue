@@ -8,7 +8,7 @@
           <div class="signup-header">
             <h2>Bonjour !</h2>
             <p style="color: #858585;font-weight: 600;">Vous n'avez pas de compte ?<u
-                style="color: #F1CE53; margin-left: 5px;"
+                style="color: #F1CE53; margin-left: 5px; cursor: pointer;"
                 v-on:click="openSignUpModal">Inscrivez vous!</u> </p>
           </div>
           <form>
