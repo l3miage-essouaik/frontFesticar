@@ -8,7 +8,7 @@
           <div class="signup-header">
             <h2>Bonjour !</h2>
             <p style="color: #858585;font-weight: 600;">Vous n'avez pas de compte ?<u
-                style="color: #F1CE53; margin-left: 5px;">Inscrivez vous!</u> </p>
+                style="color: #F1CE53; margin-left: 5px; cursor:pointer" v-on:click="openSignUpModal()">Inscrivez vous!</u> </p>
           </div>
           <form>
             <label for='password'>E-mail</label>
@@ -26,7 +26,7 @@
 
         </div>
         <div class="image-container">
-          <button class="close-button" @click="closeModal">×</button>
+          <button class="close-button" @click="closeLoginModal">×</button>
           <img src="../../assets/festival.jpg" alt="Your Image">
         </div>
       </div>
@@ -46,8 +46,11 @@ export default {
   created() {
   },
   methods: {
-    closeModal() {
-      this.$emit('close-modal');
+    closeLoginModal() {
+      this.$emit('close-LoginModal');
+    },
+    openSignUpModal() {
+      this.$emit('show-SignUpModal');
     },
   },
 };

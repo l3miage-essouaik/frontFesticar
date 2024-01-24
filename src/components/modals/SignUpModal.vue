@@ -6,11 +6,12 @@
             <img src="../../assets/chat7a.png" alt="Your Image">
           </div>
           <div class="formContainer">
-            <button class="close-button-responsive" style="display: none;">×</button>
+            <button class="close-button-responsive" style="display: none;" @click="closeSignUpModal">×</button>
+            <button class="close-button" @click="closeSignUpModal">×</button>
             <div class="signup-header">
-              <h2>Bonjour !</h2>
-              <p style="color: #858585; font-weight: 600;">Vous n'avez pas de compte ?<u
-                  style="color: #F1CE53; margin-left: 5px;">Inscrivez-vous!</u> </p>
+              <h2>Inscrivez vous à <span style="color: #F1CE53">Festicar</span></h2>
+              <p style="color: #858585; font-weight: 600;">Vous avez déjà un compte ?<u
+                  style="color: #007F5F; margin-left: 5px; cursor: pointer;" v-on:click="openLoginModal()">Se connecter</u> </p>
             </div>
             <form>
               <div class="name-inputs">
@@ -40,9 +41,11 @@
             </form>
             <div class="buttons">
               <button class="button">Connexion</button>
-              <button class="facebook-button">Continuer avec
-                <FacebookIcon style="margin-bottom: -7px;" />
-              </button>
+              <button class="facebook-button">
+              <span style="display: flex; align-items: center;">Continuer avec
+                <FacebookIcon style=" margin-left: 3px;" />
+              </span>
+            </button>
             </div>
           </div>
         </div>
@@ -66,6 +69,12 @@ export default {
         submitForm() {
             // Logic to handle form submission
             console.log(this.user);
+        },
+        closeSignUpModal() {
+            this.$emit('close-SignUpModal');
+        },
+        openLoginModal() {
+            this.$emit('show-LoginModal');
         },
     },
 };
