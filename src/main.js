@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
+import './index.css'
 
 const app = createApp(App);
 app.use(router).use(Vuetify);

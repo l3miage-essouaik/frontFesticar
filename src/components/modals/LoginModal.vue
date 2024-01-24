@@ -3,6 +3,8 @@
     <div class="signup-content">
       <div class="flex-container">
         <div class="formContainer">
+          <button class="close-button-responsive" style="display: none;">×</button>
+
           <div class="signup-header">
             <h2>Bonjour !</h2>
             <p style="color: #858585;font-weight: 600;">Vous n'avez pas de compte ?<u
@@ -244,7 +246,11 @@ form {
     margin-top: 10px;
     margin-right: 0;
   }
+.close-button-responsive{
+  display: block !important;
+  margin-left: auto; /* Push the close button to the right */
 
+}
   .image-container {
     display: none;
   }
