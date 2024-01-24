@@ -8,7 +8,8 @@
           <div class="signup-header">
             <h2>Bonjour !</h2>
             <p style="color: #858585;font-weight: 600;">Vous n'avez pas de compte ?<u
-                style="color: #F1CE53; margin-left: 5px; cursor:pointer" v-on:click="openSignUpModal()">Inscrivez vous!</u> </p>
+                style="color: #F1CE53; margin-left: 5px;"
+                v-on:click="openSignUpModal">Inscrivez vous!</u> </p>
           </div>
           <form>
             <label for='password'>E-mail</label>
@@ -19,9 +20,12 @@
           </form>
           <div class="buttons">
             <button class="button">Connexion</button>
-            <button class="facebook-button">Continuer avec
-              <FacebookIcon style="margin-bottom: -7px;" />
+            <button class="facebook-button">
+              <span style="display: flex; align-items: center;">Continuer avec
+                <FacebookIcon style=" margin-left: 3px;" />
+              </span>
             </button>
+
           </div>
 
         </div>
@@ -257,11 +261,14 @@ form {
     margin-top: 10px;
     margin-right: 0;
   }
-.close-button-responsive{
-  display: block !important;
-  margin-left: auto; /* Push the close button to the right */
 
-}
+  .close-button-responsive {
+    display: block !important;
+    margin-left: auto;
+    /* Push the close button to the right */
+
+  }
+
   .image-container {
     display: none;
   }
