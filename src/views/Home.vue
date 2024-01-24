@@ -1,17 +1,16 @@
 <template>
     <div>
-        <h1>Hello</h1>
-        <LoginModal></LoginModal>
+        <NavbarComponent></NavbarComponent>
     </div>
 </template>
 
   
 <script>
-import LoginModal from '@/components/modals/LoginModal.vue';
+import NavbarComponent from '@/components/NavbarComponent.vue';
 export default {
     name: 'HomeView',
     components: {
-        LoginModal,
+        NavbarComponent
     },
 };
 </script>

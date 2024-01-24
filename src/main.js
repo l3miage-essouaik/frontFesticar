@@ -14,7 +14,17 @@ app.component('SignUpModalVue', SignUpModal);
 import LoginModal from '@/components/modals/LoginModal.vue';
 app.component('LoginModal', LoginModal);
 
+import NavbarComponent from '@/components/NavbarComponent.vue';
+app.component('NavbarComponent', NavbarComponent);
+
+//icons
 import FacebookIcon from '@/components/Icons/FacebookIcon.vue';
 app.component('FacebookIcon', FacebookIcon); 
+
+import CartIcon from '@/components/Icons/CartIcon.vue';
+app.component('CartIcon', CartIcon); 
+
+import UserIcon from '@/components/Icons/UserIcon.vue';
+app.component('UserIcon', UserIcon); 
 
 app.mount('#app');

@@ -26,7 +26,7 @@
 
         </div>
         <div class="image-container">
-          <button class="close-button">×</button>
+          <button class="close-button" @click="closeModal">×</button>
           <img src="../../assets/festival.jpg" alt="Your Image">
         </div>
       </div>
@@ -37,10 +37,18 @@
 <script>
 import FacebookIcon from "../Icons/FacebookIcon.vue";
 export default {
-
+  props: {
+    showLogin: {
+      type: Boolean,
+    },
+  },
   name: "LoginModal",
   created() {
-    // Your created logic here
+  },
+  methods: {
+    closeModal() {
+      this.$emit('close-modal');
+    },
   },
 };
 </script>
