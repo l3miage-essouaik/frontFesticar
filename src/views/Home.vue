@@ -6,9 +6,15 @@
                 <!-- remove the outline from the input-->
                 <input type="text" placeholder="Rechercher un festival">
             </div>
-            <div class="check-in">
+            <div class="check-in" v-on:click="()=>{selectingDate=true}">
                 <p>Date</p>
                 <input type="text" placeholder="Quand ?">
+                <vue-date-picker  
+                    v-model="selectedDate" 
+                    placeholder="Quand ?"
+                    format="dd/MM/yyyy"
+                    :style="{ opacity: selectingDate ? '1' : '0', zIndex: selectingDate ? '1' : '-1'}"
+                    type="date" label="start (required)" class="overlay-picker"></vue-date-picker>
             </div>
             <div class="check-out">
                 <p>Ville</p>
@@ -20,19 +26,34 @@
             </div>
             <div class="domain">
                 <p>Domaine</p>
-                    <input type="text" placeholder="Vous êtes fan de quoi ?">
+                <input type="text" placeholder="Vous êtes fan de quoi ?">
             </div>
             <div class="icon">
-                <SearchIcon />
+                <div class="backgIcon">
+                    <SearchIcon color='white' />
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 export default {
     name: 'HomeView',
-    components: {},
+    data() {
+        return {
+            selectedDate: null,
+            selectingDate: false
+        }
+    },
+    components: { VueDatePicker },
+    methods: {
+        onDateChange() {
+            console.log(this.selectedDate);
+        },
+    },
 };
 </script>
 
@@ -102,6 +123,23 @@ body {
     justify-content: center;
     align-items: center;
 }
+.overlay-picker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity:0;
+  z-index: -1;
+  border : 0px !important;
+}
+.backgIcon {
+    width: 5%;
+    height: 50px;
+    border: 1px solid #4AD3B8;
+    background-color: #4AD3B8;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
 
 .check-in,
 .check-out,
@@ -110,7 +148,8 @@ body {
 }
 
 input {
-    padding-right: 30px; /* Adjust the padding based on the size of your SearchIcon */
+    padding-right: 30px;
+    /* Adjust the padding based on the size of your SearchIcon */
 }
 
 
@@ -144,7 +183,7 @@ input[type="text"]:focus {
 
 .domain {
     align-items: center;
-    
+
 }
 
 .domain span {
@@ -186,10 +225,9 @@ input[type="text"]:focus {
 
 .search-icon {
     position: absolute;
-    right: 5px; /* Adjust the right position based on your layout */
+    right: 5px;
+    /* Adjust the right position based on your layout */
     cursor: pointer;
     /* Add any other styles you need for your SearchIcon */
 }
-
-
 </style>
