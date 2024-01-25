@@ -24,6 +24,9 @@ import NavbarComponent from '@/components/NavbarComponent.vue';
 app.component('NavbarComponent', NavbarComponent);
 
 //icons
+import TrashIcon from '@/components/Icons/TrashIcon.vue';
+app.component('TrashIcon', TrashIcon); 
+
 import FacebookIcon from '@/components/Icons/FacebookIcon.vue';
 app.component('FacebookIcon', FacebookIcon); 
 

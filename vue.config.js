@@ -3,6 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true
 })
 module.exports = {
+  
   css: {
     loaderOptions: {
       postcss: {
@@ -12,4 +13,7 @@ module.exports = {
       },
     },
   },
+  devServer: {
+    port: 8081 // Change the port here
+}
 };
