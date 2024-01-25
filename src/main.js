@@ -7,7 +7,6 @@ import './index.css'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
-
 const app = createApp(App);
 app.use(router).use(Vuetify);
 app.component('VueDatePicker', VueDatePicker);

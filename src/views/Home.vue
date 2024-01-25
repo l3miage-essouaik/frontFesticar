@@ -54,7 +54,8 @@
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-4 gap-2" style="margin-left: 3%; margin-right: 3%;">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
+            style="margin-left: 3%; margin-right: 3%;">
             <article
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
                 <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a"
@@ -65,24 +66,24 @@
             </article>
             <article
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="../assets/tomorrowland.png"
-                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <img src="../assets/tomorrowland.png" alt="University of Southern California"
+                    class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
                 <h3 class="z-10 mt-3 text-3xl font-bold text-white">Tomorrowland</h3>
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">14 - 29 Mar, Girona</div>
             </article>
             <article
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="../assets/hellfest.png"
-                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <img src="../assets/hellfest.png" alt="University of Southern California"
+                    class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
                 <h3 class="z-10 mt-3 text-3xl font-bold text-white">Hellfest</h3>
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">20 - 26 Jan, Berlin</div>
             </article>
             <article
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="../assets/mawazine.png"
-                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <img src="../assets/mawazine.png" alt="University of Southern California"
+                    class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
                 <h3 class="z-10 mt-3 text-3xl font-bold text-white">Mawazine</h3>
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">18 - 25 Aug, Rabat</div>
