@@ -2,14 +2,14 @@
     <div>
         <nav class="bg-white dark:bg-gray-900" >
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="../assets/logo.png" class="h-20" alt="Flowbite Logo" />
-                </a>
+                </router-link>
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Festicar</span>
                 <div class="flex items-center space-x-3">
-                    <a href="#" class="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500">
+                    <router-link to="/panier" class="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500">
                         <CartIcon />
-                    </a>
+                    </router-link>
                     <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
                         class="flex items-center justify-between py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
                         <UserIcon />
