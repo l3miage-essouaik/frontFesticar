@@ -1,38 +1,92 @@
 <template>
     <div>
-        <div class="bar">
-            <div class="location">
-                <p>Festival</p>
-                <!-- remove the outline from the input-->
-                <input type="text" placeholder="Rechercher un festival">
-            </div>
-            <div class="check-in" v-on:click="()=>{selectingDate=true}">
-                <p>Date</p>
-                <input type="text" placeholder="Quand ?">
-                <vue-date-picker  
-                    v-model="selectedDate" 
-                    placeholder="Quand ?"
-                    format="dd/MM/yyyy"
-                    :style="{ opacity: selectingDate ? '1' : '0', zIndex: selectingDate ? '1' : '-1'}"
-                    type="date" label="start (required)" class="overlay-picker"></vue-date-picker>
-            </div>
-            <div class="check-out">
-                <p>Ville</p>
-                <input type="text" placeholder="Où ?">
-            </div>
-            <div class="prix">
-                <p>Prix</p>
-                <input type="text" placeholder="Combien ?">
-            </div>
-            <div class="domain">
-                <p>Domaine</p>
-                <input type="text" placeholder="Vous êtes fan de quoi ?">
-            </div>
-            <div class="icon">
-                <div class="backgIcon">
-                    <SearchIcon color='white' />
+        <div class="z-10">
+            <div class="bar">
+                <div class="location">
+                    <p>Festival</p>
+                    <!-- remove the outline from the input-->
+                    <input type="text" placeholder="Rechercher un festival">
+                </div>
+                <div class="check-in" v-on:click="() => { selectingDate = true }">
+                    <p>Date</p>
+                    <input type="text" placeholder="Quand ?">
+                    <vue-date-picker v-model="selectedDate" placeholder="Quand ?" format="dd/MM/yyyy"
+                        :style="{ opacity: selectingDate ? '1' : '0', zIndex: selectingDate ? '1' : '-1' }" type="date"
+                        label="start (required)" class="overlay-picker"></vue-date-picker>
+                </div>
+                <div class="check-out">
+                    <p>Ville</p>
+                    <input type="text" placeholder="Où ?">
+                </div>
+                <div class="prix">
+                    <p>Budget</p>
+                    <input type="text" placeholder="Quel est votre budget max ?">
+                </div>
+                <div class="domain">
+                    <p>Domaine</p>
+                    <input type="text" placeholder="Vous êtes fan de quoi ?">
+                </div>
+                <div class="icon">
+                    <div class="backgIcon">
+                        <SearchIcon color='white' />
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="pt-22">
+            <div class="pt-32 mx-auto max-w-6xl">
+                <div class="grid grid-cols-7 gap-4">
+                    <div class="col-span-1 p-2 text-xs smiya1">arts plastiques et visuels</div>
+                    <div class="col-span-1 p-2 text-xs smiya2">cinéma et audiovisuel</div>
+                    <div class="col-span-1 p-2 text-xs smiya3">cirque et arts de la rue</div>
+                    <div class="col-span-1 p-2 text-xs smiya1">danse</div>
+                    <div class="col-span-1 p-2 text-xs smiya2">divers spectacle <br /> vivant</div>
+                    <div class="col-span-1 p-2 text-xs smiya3">domaines divers</div>
+                    <div class="col-span-1 p-2 text-xs smiya1">livre et littérature</div>
+                </div>
+                <div class="grid grid-cols-6 gap-4 mt-4">
+                    <div class="col-span-1 p-2 text-sm smiya1">musiques actuelles</div>
+                    <div class="col-span-1 p-2 text-xs smiya2">musiques classiques</div>
+                    <div class="col-span-1 p-2 text-xs smiya3">pluridisciplinaire <br /> musique</div>
+                    <div class="col-span-1 p-2 text-xs smiya1">pluridisciplinaire <br /> spectacle vivant</div>
+                    <div class="col-span-1 p-2 text-xs smiya2">théâtre</div>
+                    <div class="col-span-1 p-2 text-xs smiya3">transdisciplinaire</div>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-4 gap-2" style="margin-left: 3%; margin-right: 3%;">
+            <article
+                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
+                <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a"
+                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Hafla</h3>
+                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">10 - 14 Nov, Paris</div>
+            </article>
+            <article
+                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
+                <img src="../assets/tomorrowland.png"
+                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Tomorrowland</h3>
+                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">14 - 29 Mar, Girona</div>
+            </article>
+            <article
+                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
+                <img src="../assets/hellfest.png"
+                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Hellfest</h3>
+                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">20 - 26 Jan, Berlin</div>
+            </article>
+            <article
+                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
+                <img src="../assets/mawazine.png"
+                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Mawazine</h3>
+                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">18 - 25 Aug, Rabat</div>
+            </article>
         </div>
     </div>
 </template>
@@ -80,7 +134,20 @@ body {
 
 }
 
+.smiya1 {
+    border-radius: 25px;
+    background-color: #4AD3B8;
+}
 
+.smiya2 {
+    border-radius: 25px;
+    background-color: #F1CE53;
+}
+
+.smiya3 {
+    border-radius: 25px;
+    background-color: #74D29F;
+}
 
 .bar {
     max-width: 1800px;
@@ -95,6 +162,10 @@ body {
     left: 50%;
     top: 20%;
     transform: translate(-50%, -50%);
+}
+
+gap-2 {
+    gap: 1.5rem !important;
 }
 
 @media (max-width: 768px) {
@@ -123,14 +194,16 @@ body {
     justify-content: center;
     align-items: center;
 }
+
 .overlay-picker {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity:0;
-  z-index: -1;
-  border : 0px !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: -1;
+    border: 0px !important;
 }
+
 .backgIcon {
     width: 5%;
     height: 50px;
@@ -183,7 +256,6 @@ input[type="text"]:focus {
 
 .domain {
     align-items: center;
-
 }
 
 .domain span {
