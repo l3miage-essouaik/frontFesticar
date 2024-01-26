@@ -5,7 +5,7 @@
                 <div class="location">
                     <p>Festival</p>
                     <!-- remove the outline from the input-->
-                    <input type="text" placeholder="Rechercher un festival">
+                    <input type="text" placeholder="Rechercher un festival" v-model="nomFestival">
                 </div>
                 <div class="check-in" v-on:click="() => { selectingDate = true }">
                     <p>Date</p>
@@ -26,11 +26,12 @@
                     <p>Domaine</p>
                     <input type="text" placeholder="Vous êtes fan de quoi ?">
                 </div>
-                <div class="icon">
+                <div class="icon" @click="getFestivalsWithCriterias">
                     <div class="backgIcon">
                         <SearchIcon color='white' />
                     </div>
                 </div>
+
             </div>
         </div>
         <div class="card-carousel-wrapper" style="margin-top: 140px">
@@ -43,23 +44,32 @@
                             <img src="../assets/jazz.png" :alt="type.name" class="festival-logo" />
                         </div>
                     </div>
+                    <!--
+        <div class="pt-22">
+            <div class="pt-32 mx-auto max-w-6xl">
+                <div class="grid grid-cols-7 gap-4">
+                    <div class="col-span-1 p-2 text-xs smiya1" v-for="(domaine, index) in domaines" :key="index">{{ domaine.nomDomaine }}</div>
                 </div>
             </div>
-            <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
+            -->
+                    <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
+                    style="margin-left: 3%; margin-right: 3%;">
+                    <article v-for="(festival, index) in festivals" :key="index"
+                        class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
+                        <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival"
+                            class="absolute inset-0 h-full w-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                        <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
+                        <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{
+                            getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
+        !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
+                    </article>
+                </div>
+            </div>
+            </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
-            style="margin-left: 3%; margin-right: 3%;">
-            <article v-for="(festival, index) in festivals" :key="index"
-                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival"
-                    class="absolute inset-0 h-full w-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-                <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
-                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{ festival.dateDebut }}, {{
-                    !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
-            </article>
-        </div>
-    </div>
 </template>
 
 <script>
@@ -71,12 +81,19 @@ export default {
     name: 'HomeView',
     data() {
         return {
-            currentOffset: 0,
-            windowSize: 7,
-            paginationFactor: 220,
             selectedDate: null,
             selectingDate: false,
             festivals: [],
+            domaines: [],
+            nomFestival: '',
+            dateDebut: '',
+            dateFin: '',
+            tarif: '',
+            sousDomaine: '',
+            festivalsCriterias: [],
+            currentOffset: 0,
+            windowSize: 7,
+            paginationFactor: 220,
             festivalTypes: [
                 { name: 'Jazz Festival', logo: '../assets/hellfest.png' },
                 { name: 'Techno Festival', logo: '../assets/hellfest.png' },
@@ -129,6 +146,7 @@ export default {
             ]
         }
     },
+
     components: { VueDatePicker },
     methods: {
         onDateChange() {
@@ -142,12 +160,33 @@ export default {
                 this.currentOffset += this.paginationFactor;
             }
         },
+        getFormattedDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const month = this.getMonthName(date.getMonth());
+            return `${day} ${month}`;
+        },
+        getMonthName(monthIndex) {
+            const months = [
+                'Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun',
+                'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+            return months[monthIndex];
+        }
     },
     mounted() {
         console.log("heyyyy");
-        api.get8Festival().then((data) => {
+        api.getFestivals().then((data) => {
             this.festivals = data.data;
             console.log(this.festivals)
+        })
+        api.getDomaines().then((data) => {
+            this.domaines = data.data;
+            console.log(this.domaines)
+        })
+        api.getFestivalsWithcriterias(this.nomFestival, this.dateDebut, this.dateFin, this.tarif, this.sousDomaine).then((data) => {
+            this.festivalsCriterias = data.data;
+            console.log(this.festivalsCriterias)
         })
     },
     computed: {
@@ -158,6 +197,8 @@ export default {
             return this.currentOffset === 0;
         },
     }
+
+
 };
 </script>
 

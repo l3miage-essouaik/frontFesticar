@@ -7,8 +7,15 @@ class Api {
         });
     }
 
-    get8Festival() {
+    getFestivals() {
         return this.axios.get('/api/allFestivals'); 
+    }
+
+    getDomaines(){
+        return this.axios.get('/api/domains'); 
+    }
+    getFestivalsWithcriterias(nomFestival,dateDebut,dateFin,tarif,sousDomaine){
+        return this.axios.get('/api/festivals/'); 
     }
 }
 

@@ -2,8 +2,10 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true
 })
+
+const url = process.env.VUE_APP_BACKEND_URL
 module.exports = {
-  
+
   css: {
     loaderOptions: {
       postcss: {
@@ -13,11 +15,11 @@ module.exports = {
       },
     },
   },
-  devServer:{
+  devServer: {
     port: 8081,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // URL de votre backend
+        target: url, // URL de votre backend
         changeOrigin: true,
         pathRewrite: {
           '^/api': '' // Supprimez le préfixe '/api' de la requête
