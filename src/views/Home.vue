@@ -5,11 +5,11 @@
                 <div class="location">
                     <p>Festival</p>
                     <!-- remove the outline from the input-->
-                    <input type="text" placeholder="Rechercher un festival">
+                    <input type="text" placeholder="Rechercher un festival" v-model="nomFestival">
                 </div>
                 <div class="check-in" v-on:click="() => { selectingDate = true }">
                     <p>Date</p>
-                    <input type="text" placeholder="Quand ?">
+                    <input type="text" placeholder="Quand ?"> 
                     <vue-date-picker v-model="selectedDate" placeholder="Quand ?" format="dd/MM/yyyy"
                         :style="{ opacity: selectingDate ? '1' : '0', zIndex: selectingDate ? '1' : '-1' }" type="date"
                         label="start (required)" class="overlay-picker"></vue-date-picker>
@@ -26,31 +26,18 @@
                     <p>Domaine</p>
                     <input type="text" placeholder="Vous êtes fan de quoi ?">
                 </div>
-                <div class="icon">
-                    <div class="backgIcon">
-                        <SearchIcon color='white' />
-                    </div>
+                <div class="icon" @click="getFestivalsWithCriterias">
+                <div class="backgIcon">
+                    <SearchIcon color='white' />
                 </div>
+</div>
+
             </div>
         </div>
         <div class="pt-22">
             <div class="pt-32 mx-auto max-w-6xl">
                 <div class="grid grid-cols-7 gap-4">
-                    <div class="col-span-1 p-2 text-xs smiya1">arts plastiques et visuels</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">cinéma et audiovisuel</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">cirque et arts de la rue</div>
-                    <div class="col-span-1 p-2 text-xs smiya1">danse</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">divers spectacle <br /> vivant</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">domaines divers</div>
-                    <div class="col-span-1 p-2 text-xs smiya1">livre et littérature</div>
-                </div>
-                <div class="grid grid-cols-6 gap-4 mt-4">
-                    <div class="col-span-1 p-2 text-sm smiya1">musiques actuelles</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">musiques classiques</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">pluridisciplinaire <br /> musique</div>
-                    <div class="col-span-1 p-2 text-xs smiya1">pluridisciplinaire <br /> spectacle vivant</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">théâtre</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">transdisciplinaire</div>
+                    <div class="col-span-1 p-2 text-xs smiya1" v-for="(domaine, index) in domaines" :key="index">{{ domaine.nomDomaine }}</div>
                 </div>
             </div>
         </div>
@@ -61,7 +48,7 @@
                 <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival" class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
                 <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
-                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{ festival.dateDebut }}, {{
+                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{ getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
                     !festival.commune? 'Marrakech' :festival.commune.nomCommune}}</div>
             </article>
         </div>
@@ -76,25 +63,56 @@ import api from '@/api'
 export default {
     name: 'HomeView',
     data() {
-        return {
-            selectedDate: null,
-            selectingDate: false,
-            festivals: [],
-        }
-    },
+    return {
+        selectedDate: null,
+        selectingDate: false,
+        festivals: [],
+        domaines: [],
+        nomFestival: '',
+        dateDebut: '',
+        dateFin: '',
+        tarif: '',
+        sousDomaine: '',
+        festivalsCriterias: [],
+    }
+},
+
     components: { VueDatePicker },
     methods: {
         onDateChange() {
             console.log(this.selectedDate);
         },
+        getFormattedDate(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = this.getMonthName(date.getMonth());
+      return `${day} ${month}`;
+    },
+    getMonthName(monthIndex) {
+      const months = [
+        'Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun',
+        'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'
+      ];
+      return months[monthIndex];
+    }
     },
     mounted() {
         console.log("heyyyy");
-        api.get8Festival().then((data) => {
+        api.getFestivals().then((data) => {
             this.festivals = data.data;
             console.log(this.festivals)
         })
+        api.getDomaines().then((data) => {
+            this.domaines = data.data;
+            console.log(this.domaines)
+        })
+        api.getFestivalsWithcriterias(this.nomFestival,this.dateDebut,this.dateFin,this.tarif,this.sousDomaine).then((data) => {
+            this.festivalsCriterias = data.data;
+            console.log(this.festivalsCriterias)
+        })
     }
+
+
 };
 </script>
 
