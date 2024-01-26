@@ -26,7 +26,7 @@
                     <p>Domaine</p>
                     <input type="text" placeholder="Vous êtes fan de quoi ?">
                 </div>
-                <div class="icon" @click="getFestivalsWithCriterias">
+                <div class="icon" @click="getFestivalsWithCriterias(this.nomFestival)">
                     <div class="backgIcon">
                         <SearchIcon color='white' />
                     </div>
