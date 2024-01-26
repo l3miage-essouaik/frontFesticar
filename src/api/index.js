@@ -7,8 +7,8 @@ class Api {
         });
     }
 
-    nomFunction() {
-        return this.axios.get('/user'); 
+    get8Festival() {
+        return this.axios.get('/api/allFestivals'); 
     }
 }
 

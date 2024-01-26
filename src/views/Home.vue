@@ -56,37 +56,13 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
             style="margin-left: 3%; margin-right: 3%;">
-            <article
+            <article v-for="(festival, index) in festivals" :key="index"
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a"
-                    alt="University of Southern California" class="absolute inset-0 h-full w-full object-cover">
+                <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival" class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Hafla</h3>
-                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">10 - 14 Nov, Paris</div>
-            </article>
-            <article
-                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="../assets/tomorrowland.png" alt="University of Southern California"
-                    class="absolute inset-0 h-full w-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Tomorrowland</h3>
-                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">14 - 29 Mar, Girona</div>
-            </article>
-            <article
-                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="../assets/hellfest.png" alt="University of Southern California"
-                    class="absolute inset-0 h-full w-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Hellfest</h3>
-                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">20 - 26 Jan, Berlin</div>
-            </article>
-            <article
-                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="../assets/mawazine.png" alt="University of Southern California"
-                    class="absolute inset-0 h-full w-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-                <h3 class="z-10 mt-3 text-3xl font-bold text-white">Mawazine</h3>
-                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">18 - 25 Aug, Rabat</div>
+                <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
+                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{ festival.dateDebut }}, {{
+                    !festival.commune? 'Marrakech' :festival.commune.nomCommune}}</div>
             </article>
         </div>
     </div>
@@ -95,12 +71,15 @@
 <script>
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import api from '@/api'
+
 export default {
     name: 'HomeView',
     data() {
         return {
             selectedDate: null,
-            selectingDate: false
+            selectingDate: false,
+            festivals: [],
         }
     },
     components: { VueDatePicker },
@@ -109,6 +88,13 @@ export default {
             console.log(this.selectedDate);
         },
     },
+    mounted() {
+        console.log("heyyyy");
+        api.get8Festival().then((data) => {
+            this.festivals = data.data;
+            console.log(this.festivals)
+        })
+    }
 };
 </script>
 
@@ -302,5 +288,4 @@ input[type="text"]:focus {
     /* Adjust the right position based on your layout */
     cursor: pointer;
     /* Add any other styles you need for your SearchIcon */
-}
-</style>
+}</style>
