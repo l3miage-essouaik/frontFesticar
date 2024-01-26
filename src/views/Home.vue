@@ -45,31 +45,32 @@
                         </div>
                     </div>
                     <!--
-        <div class="pt-22">
-            <div class="pt-32 mx-auto max-w-6xl">
-                <div class="grid grid-cols-7 gap-4">
-                    <div class="col-span-1 p-2 text-xs smiya1" v-for="(domaine, index) in domaines" :key="index">{{ domaine.nomDomaine }}</div>
+                    <div class="pt-22">
+                        <div class="pt-32 mx-auto max-w-6xl">
+                            <div class="grid grid-cols-7 gap-4">
+                                <div class="col-span-1 p-2 text-xs smiya1" v-for="(domaine, index) in domaines" :key="index">{{ domaine.nomDomaine }}</div>
+                            </div>
+                        </div>
+                    -->
+
                 </div>
             </div>
-            -->
-                    <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
-                    style="margin-left: 3%; margin-right: 3%;">
-                    <article v-for="(festival, index) in festivals" :key="index"
-                        class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                        <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival"
-                            class="absolute inset-0 h-full w-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-                        <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
-                        <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{
-                            getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
-        !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
-                    </article>
-                </div>
-            </div>
-            </div>
+            <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
         </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
+            style="margin-left: 3%; margin-right: 3%;">
+            <article v-for="(festival, index) in festivals" :key="index"
+                class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
+                <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival"
+                    class="absolute inset-0 h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
+                <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{
+                    getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
+        !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
+            </article>
+        </div>
+    </div>
 </template>
 
 <script>
