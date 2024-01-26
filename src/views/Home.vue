@@ -62,6 +62,15 @@
                 </div>
             </div>
         </div>
+
+        <div class="pt-22">
+            <div class="pt-32 mx-auto max-w-6xl">
+                <div class="grid grid-cols-7 gap-4">
+                    <div class="col-span-1 p-2 text-xs smiya1" v-for="(domaine, index) in domaines" :key="index">{{
+                        domaine.nomDomaine }}</div>
+                </div>
+            </div>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
             style="margin-left: 3%; margin-right: 3%;">
             <article
