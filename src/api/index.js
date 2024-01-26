@@ -28,6 +28,10 @@ class Api {
 
         return this.axios.get(url);
     }
+
+    createUser(user){
+        return this.axios.post('/api/utilisateur',user);
+    }
 }
 
 export default new Api(process.env.VUE_APP_BACKEND_URL);

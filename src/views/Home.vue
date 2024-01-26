@@ -97,7 +97,6 @@ export default {
     }
     },
     mounted() {
-        console.log("heyyyy");
         api.getFestivals().then((data) => {
             this.festivals = data.data;
             console.log(this.festivals)
