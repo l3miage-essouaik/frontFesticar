@@ -33,36 +33,30 @@
                 </div>
             </div>
         </div>
-        <div class="pt-22">
-            <div class="pt-32 mx-auto max-w-6xl">
-                <div class="grid grid-cols-7 gap-4">
-                    <div class="col-span-1 p-2 text-xs smiya1">arts plastiques et visuels</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">cinéma et audiovisuel</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">cirque et arts de la rue</div>
-                    <div class="col-span-1 p-2 text-xs smiya1">danse</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">divers spectacle <br /> vivant</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">domaines divers</div>
-                    <div class="col-span-1 p-2 text-xs smiya1">livre et littérature</div>
-                </div>
-                <div class="grid grid-cols-6 gap-4 mt-4">
-                    <div class="col-span-1 p-2 text-sm smiya1">musiques actuelles</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">musiques classiques</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">pluridisciplinaire <br /> musique</div>
-                    <div class="col-span-1 p-2 text-xs smiya1">pluridisciplinaire <br /> spectacle vivant</div>
-                    <div class="col-span-1 p-2 text-xs smiya2">théâtre</div>
-                    <div class="col-span-1 p-2 text-xs smiya3">transdisciplinaire</div>
+        <div class="card-carousel-wrapper" style="margin-top: 140px">
+            <div class="card-carousel--nav__left" @click="moveCarousel(-1)" :disabled="atHeadOfList"></div>
+            <div class="card-carousel">
+                <div class="card-carousel--overflow-container">
+                    <div class="card-carousel-cards" :style="{ transform: 'translateX(' + currentOffset + 'px)' }">
+                        <!-- Logo images for festival types -->
+                        <div class="card-carousel--card" v-for="(type, index) in festivalTypes" :key="index">
+                            <img src="../assets/jazz.png" :alt="type.name" class="festival-logo" />
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
             style="margin-left: 3%; margin-right: 3%;">
             <article v-for="(festival, index) in festivals" :key="index"
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-24 w-full">
-                <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival" class="absolute inset-0 h-full w-full object-cover">
+                <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" :alt="festival.nomFestival"
+                    class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
                 <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{ festival.dateDebut }}, {{
-                    !festival.commune? 'Marrakech' :festival.commune.nomCommune}}</div>
+                    !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
             </article>
         </div>
     </div>
@@ -77,15 +71,76 @@ export default {
     name: 'HomeView',
     data() {
         return {
+            currentOffset: 0,
+            windowSize: 7,
+            paginationFactor: 220,
             selectedDate: null,
             selectingDate: false,
             festivals: [],
+            festivalTypes: [
+                { name: 'Jazz Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                { name: 'Techno Festival', logo: '../assets/hellfest.png' },
+                // Add more festival types here
+            ],
+            items: [
+                {
+                    name: 'Kin Khao',
+                    image: '../assets/jazz.png',
+                    tag: ["Thai"]
+                },
+                {
+                    name: 'Jū-Ni',
+                    image: '../assets/jazz.png',
+                    tag: ["Sushi", "Japanese", "$$$$"]
+                },
+                {
+                    name: 'Delfina',
+                    image: '../assets/jazz.png',
+                    tag: ["Pizza", "Casual"]
+                },
+                {
+                    name: 'San Tung',
+                    image: '../assets/jazz.png',
+                    tag: ["Chinese", "$$"]
+                },
+                {
+                    name: 'Anchor Oyster Bar',
+                    image: '../assets/jazz.png',
+                    tag: ["Seafood", "Cioppino"]
+                },
+                {
+                    name: 'Locanda',
+                    image: '../assets/jazz.png',
+                    tag: ["Italian"]
+                },
+                {
+                    name: 'Garden Creamery',
+                    image: '../assets/jazz.png',
+                    tag: ["Ice cream"]
+                }
+            ]
         }
     },
     components: { VueDatePicker },
     methods: {
         onDateChange() {
             console.log(this.selectedDate);
+        },
+        moveCarousel(direction) {
+            const maxOffset = (this.items.length - this.windowSize) * this.paginationFactor;
+            if (direction === 1 && this.currentOffset > -maxOffset) {
+                this.currentOffset -= this.paginationFactor;
+            } else if (direction === -1 && this.currentOffset < 0) {
+                this.currentOffset += this.paginationFactor;
+            }
         },
     },
     mounted() {
@@ -94,6 +149,14 @@ export default {
             this.festivals = data.data;
             console.log(this.festivals)
         })
+    },
+    computed: {
+        atEndOfList() {
+            return this.currentOffset <= -((this.items.length - this.windowSize) * this.paginationFactor);
+        },
+        atHeadOfList() {
+            return this.currentOffset === 0;
+        },
     }
 };
 </script>
@@ -288,4 +351,164 @@ input[type="text"]:focus {
     /* Adjust the right position based on your layout */
     cursor: pointer;
     /* Add any other styles you need for your SearchIcon */
-}</style>
+}
+
+.card-carousel-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 40px;
+    color: #666a73;
+}
+
+.card-carousel {
+    display: flex;
+    justify-content: center;
+    width: 640px;
+}
+
+.card-carousel--overflow-container {
+    overflow: hidden;
+}
+
+.card-carousel--nav__left,
+.card-carousel--nav__right {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-top: 2px solid #42b883;
+    border-right: 2px solid #42b883;
+    cursor: pointer;
+    margin: 0 20px;
+    transition: transform 150ms linear;
+}
+
+.card-carousel--nav__left[disabled],
+.card-carousel--nav__right[disabled] {
+    opacity: 0.2;
+    border-color: black;
+}
+
+.card-carousel--nav__left {
+    transform: rotate(-135deg);
+}
+
+.card-carousel--nav__left:active {
+    transform: rotate(-135deg) scale(0.9);
+}
+
+.card-carousel--nav__right {
+    transform: rotate(45deg);
+}
+
+.card-carousel--nav__right:active {
+    transform: rotate(45deg) scale(0.9);
+}
+
+.card-carousel-cards {
+    display: flex;
+    transition: transform 150ms ease-out;
+    transform: translatex(0px);
+}
+
+.card-carousel-cards .card-carousel--card {
+    margin: 0 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px 0 rgba(40, 44, 53, 0.06), 0 2px 2px 0 rgba(40, 44, 53, 0.08);
+    background-color: #fff;
+    border-radius: 4px;
+    z-index: 3;
+    margin-bottom: 2px;
+}
+
+.card-carousel-cards .card-carousel--card:first-child {
+    margin-left: 0;
+}
+
+.card-carousel-cards .card-carousel--card:last-child {
+    margin-right: 0;
+}
+
+.card-carousel-cards .card-carousel--card img {
+    vertical-align: bottom;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    transition: opacity 150ms linear;
+    user-select: none;
+}
+
+.card-carousel-cards .card-carousel--card img:hover {
+    opacity: 0.5;
+}
+
+.card-carousel-cards .card-carousel--card--footer {
+    border-top: 0;
+    padding: 7px 15px;
+}
+
+.card-carousel-cards .card-carousel--card--footer p {
+    padding: 3px 0;
+    margin: 0;
+    margin-bottom: 2px;
+    font-size: 19px;
+    font-weight: 500;
+    color: #2c3e50;
+    user-select: none;
+}
+
+.card-carousel-cards .card-carousel--card--footer p.tag {
+    font-size: 11px;
+    font-weight: 300;
+    padding: 4px;
+    background: rgba(40, 44, 53, 0.06);
+    display: inline-block;
+    position: relative;
+    margin-left: 4px;
+    color: #666a73;
+}
+
+.card-carousel-cards .card-carousel--card--footer p.tag:before {
+    content: "";
+    float: left;
+    position: absolute;
+    top: 0;
+    left: -12px;
+    width: 0;
+    height: 0;
+    border-color: transparent rgba(40, 44, 53, 0.06) transparent transparent;
+    border-style: solid;
+    border-width: 8px 12px 12px 0;
+}
+
+.card-carousel-cards .card-carousel--card--footer p.tag.secondary {
+    margin-left: 0;
+    border-left: 1.45px dashed white;
+}
+
+.card-carousel-cards .card-carousel--card--footer p.tag.secondary:before {
+    display: none !important;
+}
+
+.card-carousel-cards .card-carousel--card--footer p.tag:after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: -3px;
+    float: left;
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    background: white;
+    box-shadow: 0px 0px 0px #004977;
+}
+
+h1 {
+    font-size: 3.6em;
+    font-weight: 100;
+    text-align: center;
+    margin-bottom: 0;
+    color: #333;
+}
+</style>
