@@ -13,7 +13,7 @@ module.exports = {
       },
     },
   },
-  devServer: {
-    port: 8081 // Change the port here
-}
+  devServer:{
+    port: 8081
+  }
 };
