@@ -62,7 +62,11 @@
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
+        <img v-if="loading" class="loadPic" src="../assets/car.png" alt="Chargement en cours...">
+        <div v-if="loading" class="loader">
+            Chargement en cours...
+        </div>
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
             style="margin-left: 3%; margin-right: 3%;">
             <article
                 v-for="(festival, index) in (festivalsFiltered.length > 0 ? festivalsFiltered : festivals).slice(0, limit)"
@@ -79,6 +83,7 @@
         </div>
         <div class="flex justify-center items-center">
             <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlusFestival()"
+                v-if="!loading"
                 :class="{ 'disabledButton': limit >= festivalsFiltered.length && festivalsFiltered.length > 0 }">
                 Voir plus
             </button>
@@ -87,7 +92,6 @@
 </template>
 
 <script>
-//import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import api from '@/api'
 import { myMixins } from '@/mixins/myMixins'; 
@@ -113,6 +117,7 @@ export default {
             festivalsFiltered: [],
             logoDomaines: [],
             limit: 8,
+            loading: true,
         }
     },
     methods: {
@@ -144,6 +149,7 @@ export default {
     mounted() {
         api.getFestivals().then((data) => {
             this.festivals = data.data;
+            this.loading = false;
         })
         api.getDomaines().then((data) => {
             this.domaines = data.data;
@@ -196,6 +202,38 @@ body {
     font-size: 12px;
 }
 
+.loadPic {
+    width: 10%;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Animation pour faire bouger l'image de bas en haut */
+    animation: moveUpDown 2s infinite alternate;
+    /* Animation pour faire bouger l'image de gauche à droite */
+    animation: moveLeftRight 2s infinite alternate;
+}
+
+.loader{
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Animation pour faire bouger l'image de bas en haut */
+
+}
+
+/* Animation pour faire bouger l'image de bas en haut */
+@keyframes moveUpDown {
+    0% { transform: translateY(10px); }
+    100% { transform: translateY(-10px); }
+}
+
+/* Animation pour faire bouger l'image de gauche à droite */
+@keyframes moveLeftRight {
+    0% { transform: translateX(-120px); }
+    100% { transform: translateX(10px); }
+}
 .bar {
     max-width: 100%;
     height: 69px !important;
