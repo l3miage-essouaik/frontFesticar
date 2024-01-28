@@ -82,6 +82,7 @@ export default {
         },
         createUser(){
             api.createUser(this.user).then((data) => {
+                console.log(data);
                 alert('User created successfully!');
 
         })}
@@ -152,10 +153,6 @@ input {
     margin-top: -9px;
 }
 
-.input-group-item {
-    margin-bottom: 10px;
-}
-
 form {
     display: grid;
     grid-template-columns: auto auto;
@@ -172,15 +169,6 @@ input[type=email],
 input[type=tel],
 input[type=password] {
     padding: 10px;
-}
-
-.signup-button {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
 .button {

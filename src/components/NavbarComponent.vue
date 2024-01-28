@@ -1,13 +1,14 @@
 <template>
     <div>
-        <nav class="bg-white dark:bg-gray-900" >
+        <nav class="bg-white dark:bg-gray-900">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="../assets/logo.png" class="h-20" alt="Flowbite Logo" />
                 </router-link>
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Festicar</span>
                 <div class="flex items-center space-x-3">
-                    <router-link to="/panier" class="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500">
+                    <router-link to="/panier"
+                        class="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500">
                         <CartIcon />
                     </router-link>
                     <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
@@ -51,12 +52,8 @@
 </template>
 
 <script>
-import {
-    onMounted
-} from 'vue';
-import {
-    initFlowbite
-} from 'flowbite';
+import {onMounted} from 'vue';
+import {initFlowbite} from 'flowbite';
 import CartIcon from './Icons/CartIcon.vue'
 import UserIcon from './Icons/UserIcon.vue'
 import LoginModal from '@/components/modals/LoginModal.vue';
@@ -103,26 +100,32 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 80%; /* Set a maximum width for responsiveness */
+    max-width: 80%;
+    /* Set a maximum width for responsiveness */
     padding: 20px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensure it appears above other content */
+    z-index: 1000;
+    /* Ensure it appears above other content */
 
     /* Additional styles for responsiveness */
     @media (max-width: 768px) {
-        width: 90%; /* Adjust the width for smaller screens */
+        width: 90%;
+        /* Adjust the width for smaller screens */
     }
 }
+
 .backdrop {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(68, 68, 68, 0.2); /* Semi-transparent black background */
-    backdrop-filter: blur(8px); /* Adjust the blur amount as needed */
-    z-index: 999; /* Ensure it appears above other content */
-}
-</style>
+    background-color: rgba(68, 68, 68, 0.2);
+    /* Semi-transparent black background */
+    backdrop-filter: blur(8px);
+    /* Adjust the blur amount as needed */
+    z-index: 999;
+    /* Ensure it appears above other content */
+}</style>

@@ -25,12 +25,13 @@ class Api {
 
         // Supprimez le dernier '&' de l'URL
         url = url.slice(0, -1);
+        console.log(url)
 
         return this.axios.get(url);
     }
 
     createUser(user){
-        return this.axios.post('/api/utilisateur',user);
+        return this.axios.post('/api/utilisateur/',user);
     }
 }
 

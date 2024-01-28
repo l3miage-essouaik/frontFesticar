@@ -8,8 +8,8 @@
           <div class="signup-header">
             <h2>Bonjour !</h2>
             <p style="color: #858585;font-weight: 600;">Vous n'avez pas de compte ?<u
-                style="color: #F1CE53; margin-left: 5px; cursor: pointer;"
-                v-on:click="openSignUpModal">Inscrivez vous!</u> </p>
+                style="color: #F1CE53; margin-left: 5px; cursor: pointer;" v-on:click="openSignUpModal">Inscrivez
+                vous!</u> </p>
           </div>
           <form>
             <label for='password'>E-mail</label>
@@ -21,7 +21,7 @@
           <div class="buttons">
             <button class="button">Connexion</button>
             <button class="facebook-button">
-              <span style="display: flex; align-items: center;">Continuer avec
+              <span @click="loginWithFacebook" style="display: flex; align-items: center;">Continuer avec
                 <FacebookIcon style=" margin-left: 3px;" />
               </span>
             </button>
@@ -40,6 +40,10 @@
   
 <script>
 import FacebookIcon from "../Icons/FacebookIcon.vue";
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { getAuth,signInWithPopup, FacebookAuthProvider } from "firebase/auth";
+
 export default {
   props: {
     showLogin: {
@@ -48,6 +52,7 @@ export default {
   },
   name: "LoginModal",
   created() {
+    console.log(firebase);
   },
   methods: {
     closeLoginModal() {
@@ -56,6 +61,23 @@ export default {
     openSignUpModal() {
       this.$emit('show-SignUpModal');
     },
+    loginWithFacebook() {
+      const provider = new FacebookAuthProvider();
+      const auth = getAuth();
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          const credential = FacebookAuthProvider.credentialFromResult(result);
+          const accessToken = credential.accessToken;
+
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          const email = error.customData.email;
+          const credential = FacebookAuthProvider.credentialFromError(error);
+        });
+    }
   },
 };
 </script>
@@ -277,4 +299,5 @@ form {
     width: 100%;
     margin-top: -20px;
   }
-}</style>
+}
+</style>
