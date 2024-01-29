@@ -53,7 +53,7 @@
                         <p class="text-xs text-gray-500 ml-2">Conducteur</p>
                     </div>
                     <div class="ml-5" @mouseover="showInfo = true" @mouseleave="showInfo = false">
-                    <div class="information"> ℹ</div> 
+                    <div class="information"> &#9432;</div> 
                         <div class="tooltip" v-if="showInfo">
                             <p>Type de voiture: SUV</p>
                             <p>Nombre de passagers: {{ counter }}</p>
@@ -125,7 +125,7 @@ export default {
             counter: 0,
             typesVehicule: [],
             domaine: '',
-            showInfo: true
+            showInfo: false
         }
     },
     methods: {
@@ -177,12 +177,12 @@ export default {
 }
 
 .information {
-    border: 2px solid #054652;
     color: #054652;
     border-radius: 100%;
     padding: 1px 6px;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 18px;
+    font-weight: 900;
 }
 
 .bar {
