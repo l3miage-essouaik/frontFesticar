@@ -21,8 +21,8 @@
           <div class="buttons">
             <button class="button">Connexion</button>
             <button class="facebook-button">
-              <span @click="signinPopup" style="display: flex; align-items: center;">Continuer avec
-                <GoogleIcon style=" margin-left: 8px;" />
+              <span @click="loginWithFacebook" style="display: flex; align-items: center;">Continuer avec
+                <GoogleIcon style=" margin-left: 3px;" />
               </span>
             </button>
 

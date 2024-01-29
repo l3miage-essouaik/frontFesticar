@@ -52,6 +52,13 @@
                         <p class="text-sm font-medium ml-2">Rass Lavoka</p>
                         <p class="text-xs text-gray-500 ml-2">Conducteur</p>
                     </div>
+                    <div class="ml-5" @mouseover="showInfo = true" @mouseleave="showInfo = false">
+                    <div class="information"> ℹ</div> 
+                        <div class="tooltip" v-if="showInfo">
+                            <p>Type de voiture: SUV</p>
+                            <p>Nombre de passagers: {{ counter }}</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-span-6 text-right">
@@ -85,11 +92,26 @@
                     <p class="text-sm font-medium">Hellfest</p>
                     <p class="text-sm font-small">Clisson Loire Atlantique</p>
                 </div>
-                <div class="col-span-9 h-4  mt-8 flex justify-between items-center">
-                    <p class="text-sm font-medium" v-if="counter>1">Nombre de passagers &nbsp;:&nbsp; {{counter}}</p>
-                    <p class="text-sm font-medium" v-else>Nombre de passager &nbsp;:&nbsp; {{counter}}</p>
+                <div class="col-span-6 h-4 mt-8 flex justify-between items-center">
+                    <p class="text-sm font-medium" v-if="counter>1">Nombre de places disponibles &nbsp;:&nbsp; {{counter}}</p>
+                    <p class="text-sm font-medium" v-else>Nombre de place disponible &nbsp;:&nbsp; {{counter}}</p>
+                    <form class="max-w-xs ml-4">
+                            <div class="relative flex items-center">
+                                <div v-on:click="decrementCounter()" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
+                                    -
+                                </div>
+                                <input type="text" id="counter-input" data-input-counter
+                                    class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+                                    placeholder="" value="12" v-model="counter" required>
+                                <div v-on:click="incrementCounter()" type="button" id="increment-button" data-input-counter-increment="counter-input">
+                                    +
+                                </div>
+                            </div>
+                        </form>
                 </div>
-
+                <div class="col-span-6 h-4 mt-8 justify-end">
+                    <div class="addToCart" >Ajouter au panier</div>
+                </div>
             </div>
         </div>
     </div>
@@ -102,7 +124,8 @@ export default {
         return {
             counter: 0,
             typesVehicule: [],
-            domaine: '', 
+            domaine: '',
+            showInfo: true
         }
     },
     methods: {
@@ -122,6 +145,46 @@ export default {
 }
 </script>
 <style scoped>
+.addToCart{
+    border: 1px solid #F1CE53;
+    padding: 10px;
+    font-size: 14px;
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+    cursor: pointer;
+    color: #F1CE53;
+}
+
+.addToCart:hover{
+    background-color: #F1CE53;
+    color: #fff;
+    transition: ease-in 0.2s;
+}
+.tooltip {
+    position: absolute;
+    top: 20px;
+    /* Ajustez la position selon vos besoins */
+    left: 200px;
+    /* Ajustez la position selon vos besoins */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    font-size: 10px;
+}
+
+.information {
+    border: 2px solid #054652;
+    color: #054652;
+    border-radius: 100%;
+    padding: 1px 6px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
 .bar {
     max-width: 100%;
     height: 69px !important;
@@ -146,6 +209,7 @@ gap-2 {
         width: 100%;
     }
 }
+
 select {
     color: #666666;
     font-size: 12px;
@@ -167,6 +231,7 @@ select:focus {
     outline: 0;
     box-shadow: 0 0 0 2px rgba(111, 111, 111, 0.2);
 }
+
 .bar div {
     border-radius: inherit;
     padding: 0.8rem 1.5rem;
@@ -261,9 +326,10 @@ input[type="text"]:focus {
     position: relative;
 }
 
-.domain:hover select{
-    transition: background-color 0.1s ease-in-out; 
+.domain:hover select {
+    transition: background-color 0.1s ease-in-out;
 }
+
 .bar>div::before {
     position: absolute;
     content: "";
@@ -284,7 +350,7 @@ input[type="text"]:focus {
     background: transparent;
 }
 
-.inputDate{
+.inputDate {
     color: #666666;
     font-size: 12px;
     margin-top: -5px;
@@ -317,14 +383,22 @@ select:focus {
 
 }
 
-#increment-button,
-#decrement-button {
+#increment-button{
     border-radius: 100%;
     background-color: transparent;
     color: #054652 !important;
     border: 2px solid #054652 !important;
     outline: none;
+    padding: 0px 5px;
 
+}
+#decrement-button{
+    border-radius: 100%;
+    background-color: transparent;
+    color: #054652 !important;
+    border: 2px solid #054652 !important;
+    outline: none;
+    padding: 0px 5px;
 }
 
 .border {
