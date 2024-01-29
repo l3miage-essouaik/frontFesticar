@@ -61,6 +61,7 @@
                     </div>
                 </div>
             </div>
+            <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
         </div>
         <img v-if="loading" class="loadPic" src="../assets/car.png" alt="Chargement en cours...">
         <div v-if="loading" class="loader">
@@ -137,6 +138,14 @@ export default {
             });
         },
     
+        moveCarousel(direction) {
+            const maxOffset = (this.items.length - this.windowSize) * this.paginationFactor;
+            if (direction === 1 && this.currentOffset > -maxOffset) {
+                this.currentOffset -= this.paginationFactor;
+            } else if (direction === -1 && this.currentOffset < 0) {
+                this.currentOffset += this.paginationFactor;
+            }
+        },
         moveCarousel(direction) {
             const maxOffset = (this.items.length - this.windowSize) * this.paginationFactor;
             if (direction === 1 && this.currentOffset > -maxOffset) {
