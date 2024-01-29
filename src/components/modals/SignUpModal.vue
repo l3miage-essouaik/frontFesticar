@@ -1,59 +1,62 @@
 <template>
-<div class="signup-modal">
-    <div class="signup-content">
+    <div class="signup-modal">
+      <div class="signup-content">
         <div class="flex-container">
-            <div class="image-container">
-                <img src="../../assets/chat7a.png" alt="Your Image">
+          <div class="image-container">
+            <img src="../../assets/chat7a.png" alt="Your Image">
+          </div>
+          <div class="formContainer">
+            <button class="close-button-responsive" style="display: none;" @click="closeSignUpModal">×</button>
+            <button class="close-button" @click="closeSignUpModal">×</button>
+            <div class="signup-header">
+              <h2>Inscrivez vous à <span style="color: #F1CE53">Festicar</span></h2>
+              <p style="color: #858585; font-weight: 600;">Vous avez déjà un compte ?<u style="color: #007F5F; margin-left: 5px; cursor: pointer;" v-on:click="openLoginModal()">Se connecter</u> </p>
             </div>
-            <div class="formContainer">
-                <button class="close-button-responsive" style="display: none;" @click="closeSignUpModal">×</button>
-                <button class="close-button" @click="closeSignUpModal">×</button>
-                <div class="signup-header">
-                    <h2>Inscrivez vous à <span style="color: #F1CE53">Festicar</span></h2>
-                    <p style="color: #858585; font-weight: 600;">Vous avez déjà un compte ?<u style="color: #007F5F; margin-left: 5px; cursor: pointer;" v-on:click="openLoginModal()">Se connecter</u> </p>
+            <form>
+              <div class="name-inputs">
+                <div class="input-group">
+                  <label for="nom">Nom</label>
+                  <input class="custom-input" type="text" id="nom" name="nom" placeholder="Entrez votre nom" v-model="user.nom">
                 </div>
-                <form>
-                    <div class="name-inputs">
-                        <div class="input-group">
-                            <label for="nom">Nom</label>
-                            <input class="custom-input" type="text" id="nom" name="nom" placeholder="Entrez votre nom">
-                        </div>
-                        <div class="input-group">
-                            <label for="prenom">Prénom</label>
-                            <input class="custom-input" type="text" id="prenom" name="prenom" placeholder="Entrez votre prénom">
-                        </div>
-                    </div>
-
-                    <div class="name-inputs">
-                        <div class="input-group">
-                            <label for="telephone">Téléphone</label>
-                            <input class="custom-input" type='tel' id='telephone' name='telephone' pattern="[0-9]{10}" placeholder='06'>
-                        </div>
-                        <div class="input-group">
-                            <label for="email">E-mail</label>
-                            <input class="custom-input" type="email" id="email" name="email" placeholder="Entrez votre email">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Mot de passe</label>
-                        <input class="custom-input" type='password' id='password' name='password' placeholder="Entrez votre mot de passe">
-                    </div>
-                </form>
-                <div class="buttons">
-                    <button class="button">Connexion</button>
-                    <button class="facebook-button">
-                        <span style="display: flex; align-items: center;">Continuer avec
-                            <FacebookIcon style=" margin-left: 3px;" />
-                        </span>
-                    </button>
+                <div class="input-group">
+                  <label for="prenom">Prénom</label>
+                  <input class="custom-input" type="text" id="prenom" name="prenom" placeholder="Entrez votre prénom" v-model="user.prenom">
                 </div>
+              </div>
+  
+              <div class="name-inputs">
+                <div class="input-group">
+                  <label for="telephone">Téléphone</label>
+                  <input class="custom-input" type='tel' id='telephone' name='telephone' pattern="[0-9]{10}" placeholder='06' v-model="user.telephone">
+                </div>
+                <div class="input-group">
+                  <label for="email">E-mail</label>
+                  <input class="custom-input" type="email" id="email" name="email" placeholder="Entrez votre email" v-model="user.email">
+                </div>
+              </div>
+              <div class="input-group">
+                <label>Mot de passe</label>
+                <input class="custom-input" type='password' id='password' name='password' placeholder="Entrez votre mot de passe" v-model="user.password">
+              </div>
+            </form>
+            <div class="buttons">
+              <button class="button" v-on:click="createUser()">S'inscrire</button>
+              <button class="facebook-button">
+                <span style="display: flex; align-items: center;">Continuer avec
+                  <FacebookIcon style=" margin-left: 3px;" />
+                </span>
+              </button>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-</template>
+  </template>
+  
 
 <script>
+import api from '@/api'
+
 export default {
     data() {
         return {
@@ -77,6 +80,12 @@ export default {
         openLoginModal() {
             this.$emit('show-LoginModal');
         },
+        createUser(){
+            api.createUser(this.user).then((data) => {
+                console.log(data);
+                alert('User created successfully!');
+
+        })}
     },
 };
 </script>
@@ -144,10 +153,6 @@ input {
     margin-top: -9px;
 }
 
-.input-group-item {
-    margin-bottom: 10px;
-}
-
 form {
     display: grid;
     grid-template-columns: auto auto;
@@ -164,15 +169,6 @@ input[type=email],
 input[type=tel],
 input[type=password] {
     padding: 10px;
-}
-
-.signup-button {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
 .button {
