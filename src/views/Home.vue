@@ -164,12 +164,6 @@ export default {
         });
     },
     computed: {
-        atEndOfList() {
-            return this.currentOffset <= -((this.items.length - this.windowSize) * this.paginationFactor);
-        },
-        atHeadOfList() {
-            return this.currentOffset === 0;
-        },
     }
 };
 </script>
