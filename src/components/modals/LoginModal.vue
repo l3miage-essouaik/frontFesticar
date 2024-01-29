@@ -22,7 +22,7 @@
             <button class="button">Connexion</button>
             <button class="facebook-button">
               <span @click="loginWithFacebook" style="display: flex; align-items: center;">Continuer avec
-                <FacebookIcon style=" margin-left: 3px;" />
+                <GoogleIcon style=" margin-left: 3px;" />
               </span>
             </button>
 
@@ -39,7 +39,7 @@
 </template>
   
 <script>
-import FacebookIcon from "../Icons/FacebookIcon.vue";
+import GoogleIcon from "../Icons/GoogleIcon.vue";
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { getAuth,signInWithPopup, FacebookAuthProvider } from "firebase/auth";

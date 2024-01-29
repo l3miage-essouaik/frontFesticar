@@ -43,7 +43,7 @@
               <button class="button" v-on:click="createUser()">S'inscrire</button>
               <button class="facebook-button">
                 <span style="display: flex; align-items: center;">Continuer avec
-                  <FacebookIcon style=" margin-left: 3px;" />
+                  <GoogleIcon style=" margin-left: 3px;" />
                 </span>
               </button>
             </div>

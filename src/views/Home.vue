@@ -79,7 +79,7 @@
                 <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{
                     getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
-        !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
+                    !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
             </article>
         </div>
         <div class="flex justify-center items-center">

@@ -79,11 +79,6 @@
                         </form>
                     </div>
                 </div>
-
-
-
-
-
                 <div class="col-span-3 h-4  mt-8 flex justify-end">
                     <p class="text-sm font-medium" style="margin-top: -7px;">
                         <TrashIcon :size="30" color="#054652" />
