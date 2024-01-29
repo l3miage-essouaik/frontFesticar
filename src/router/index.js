@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/Home.vue';
 import PanierView from '@/views/Panier.vue';
 import FestivalView from '@/views/Festival.vue';
+import CovoiturageView from '@/views/Covoiturage.vue';
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: '/festival',
     name : 'Festival',
     component: FestivalView,
+  },
+  {
+    path: '/covoiturage',
+    name : 'Covoiturage',
+    component: () => CovoiturageView,
   }
 ];
 
