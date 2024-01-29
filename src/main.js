@@ -6,13 +6,11 @@ import 'vuetify/dist/vuetify.min.css';
 import './index.css'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { VueFire, VueFireAuth } from 'vuefire';
+
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAJMnEdbsomQQpysguTkLQg8vbxLmBNFYc",
   authDomain: "festicar-cf2b2.firebaseapp.com",
@@ -26,9 +24,16 @@ initializeApp(firebaseConfig);
 
 const app = createApp(App);
 app.use(router).use(Vuetify);
+app.use(VueFire, {
+  firebaseApp: initializeApp(firebaseConfig),
+  modules: [
+    VueFireAuth(),
+    // Autres modules...
+  ],
+});
+
+
 app.component('VueDatePicker', VueDatePicker);
-
-
 
 import SignUpModal from '@/components/modals/SignUpModal.vue';
 app.component('SignUpModalVue', SignUpModal);
@@ -43,8 +48,8 @@ app.component('NavbarComponent', NavbarComponent);
 import TrashIcon from '@/components/Icons/TrashIcon.vue';
 app.component('TrashIcon', TrashIcon); 
 
-import FacebookIcon from '@/components/Icons/FacebookIcon.vue';
-app.component('FacebookIcon', FacebookIcon); 
+import GoogleIcon from '@/components/Icons/GoogleIcon.vue';
+app.component('GoogleIcon', GoogleIcon); 
 
 import CartIcon from '@/components/Icons/CartIcon.vue';
 app.component('CartIcon', CartIcon); 

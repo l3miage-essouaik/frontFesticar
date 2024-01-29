@@ -49,8 +49,8 @@
             <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
         </div> -->
 
-        <div class="overflow-x-auto whitespace-nowrap">
-            <div class="w-full h-0.5 bg-gray-200 rounded" style="margin-top: 90px;margin-bottom:10px;z-index:999"></div>
+        <div class="overflow-x-auto whitespace-nowrap justify-center">
+            <div class="w-full h-0.5 bg-gray-200 rounded" style="margin-top: 90px;margin-bottom:10px;z-index:-1"></div>
             <div v-for="(type, index) in logoDomaines" :key="index" class="inline-block mx-2 relative">
                 <div class="group">
                     <img :src="require(`../assets/${type.nomLogo}`)" class="domains-logo" />
@@ -163,12 +163,6 @@ export default {
         });
     },
     computed: {
-        atEndOfList() {
-            return this.currentOffset <= -((this.items.length - this.windowSize) * this.paginationFactor);
-        },
-        atHeadOfList() {
-            return this.currentOffset === 0;
-        },
     }
 };
 </script>

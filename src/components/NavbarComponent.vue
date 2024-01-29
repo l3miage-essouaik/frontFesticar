@@ -106,13 +106,9 @@ export default {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    /* Ensure it appears above other content */
-
-    /* Additional styles for responsiveness */
+    z-index: 999999999999;
     @media (max-width: 768px) {
         width: 90%;
-        /* Adjust the width for smaller screens */
     }
 }
 

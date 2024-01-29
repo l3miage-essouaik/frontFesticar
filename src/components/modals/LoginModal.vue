@@ -21,8 +21,8 @@
           <div class="buttons">
             <button class="button">Connexion</button>
             <button class="facebook-button">
-              <span @click="loginWithFacebook" style="display: flex; align-items: center;">Continuer avec
-                <FacebookIcon style=" margin-left: 3px;" />
+              <span @click="signinPopup" style="display: flex; align-items: center;">Continuer avec
+                <GoogleIcon style=" margin-left: 8px;" />
               </span>
             </button>
 
@@ -39,10 +39,15 @@
 </template>
   
 <script>
-import FacebookIcon from "../Icons/FacebookIcon.vue";
+import GoogleIcon from "../Icons/GoogleIcon.vue";
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { getAuth,signInWithPopup, FacebookAuthProvider } from "firebase/auth";
+import { useFirebaseAuth } from 'vuefire'
+import { GoogleAuthProvider } from 'firebase/auth'
+import { signInWithPopup } from 'firebase/auth'
+
+const auth = useFirebaseAuth()
+const googleAuthProvider = new GoogleAuthProvider()
 
 export default {
   props: {
@@ -61,23 +66,24 @@ export default {
     openSignUpModal() {
       this.$emit('show-SignUpModal');
     },
-    loginWithFacebook() {
-      const provider = new FacebookAuthProvider();
-      const auth = getAuth();
-      signInWithPopup(auth, provider)
+    signinPopup() {
+      signInWithPopup(auth, googleAuthProvider)
         .then((result) => {
-          const user = result.user;
-          const credential = FacebookAuthProvider.credentialFromResult(result);
-          const accessToken = credential.accessToken;
-
+          // Connexion réussie, récupérer les informations nécessaires du résultat
+          let token = result.credential.accessToken;
+          let user = result.user;
+          console.log('Token:', token); // Afficher le token d'accès
+          console.log('User:', user); // Afficher les informations de l'utilisateur authentifié
+          // Effectuez d'autres actions en fonction du résultat de la connexion réussie
         })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          const email = error.customData.email;
-          const credential = FacebookAuthProvider.credentialFromError(error);
+        .catch((reason) => {
+          // Gestion des erreurs en cas d'échec de la connexion
+          console.error('Failed sign', reason);
         });
+    },created(){
+      console.log(useFirebaseAuth());
     }
+
   },
 };
 </script>
