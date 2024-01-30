@@ -43,7 +43,7 @@
                         <div class="input-group">
                             <label>Mot de passe</label>
                             <input class="custom-input" type='password' id='password' name='password'
-                                placeholder="Entrez votre mot de passe" v-model="user.password">
+                                placeholder="Entrez votre mot de passe" v-model="user.mdp">
                         </div>
                     </form>
                     <div class="buttons">
@@ -74,7 +74,8 @@ export default {
                 prenom: '',
                 email: '',
                 telephone: '',
-                password: '',
+                mdp: '',
+                typeUtilisateur: 0,
             },
         };
     },
@@ -100,7 +101,17 @@ export default {
         googleSignIn() {
             authService.signInWithGoogle()
                 .then(result => {
+                    // Extract user information from Google authentication result
+                    this.user.nom = result.user.displayName.split(' ')[1];
+                    this.user.prenom = result.user.displayName.split(' ')[0];
+                    this.user.email = result.user.email;
+                    this.user.telephone = "1231242",
+                    this.user.mdp = "wawawawawawa";
+                    // Call createUser method with extracted user information
+                    this.createUser();
+                    // Close sign-up modal
                     this.$emit('close-SignUpModal');
+                    console.log("rezultaaaa", result.user.email);
                 })
                 .catch(error => {
                     // Handle sign-in error

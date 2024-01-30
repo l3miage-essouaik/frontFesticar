@@ -31,7 +31,7 @@ class Api {
     }
 
     createUser(user){
-        return this.axios.post('/api/utilisateur/',user);
+        return this.axios.post('/api/utilisateur/', user);
     }
 }
 
