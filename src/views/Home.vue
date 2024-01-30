@@ -35,20 +35,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="card-carousel-wrapper" style="margin-top: 140px">
-            <div class="card-carousel--nav__left" @click="moveCarousel(-1)" :disabled="atHeadOfList"></div>
-            <div class="card-carousel">
-                <div class="card-carousel--overflow-container">
-                    <div class="card-carousel-cards" :style="{ transform: 'translateX(' + currentOffset + 'px)' }">
-                        <div class="card-carousel--card" v-for="(type, index) in logoDomaines" :key="index">
-                            <img :src="require(`../assets/${type}`)" class="festival-logo" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
-        </div> -->
-
         <div class="overflow-x-auto whitespace-nowrap justify-center">
             <div class="w-full h-0.5 bg-gray-200 rounded" style="margin-top: 90px;margin-bottom:10px;z-index:-1"></div>
             <div v-for="(type, index) in logoDomaines" :key="index" class="inline-block mx-2 relative">
@@ -80,10 +66,6 @@
                     getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
                     !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
             </router-link>
-            <span v-for="(festival, index) in (festivalsFiltered.length > 0 ? festivalsFiltered : festivals).slice(0, limit)"
-                :key="index">
-                {{ festival }}
-            </span>
         </div>
         <div class="flex justify-center items-center">
             <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlusFestival()"

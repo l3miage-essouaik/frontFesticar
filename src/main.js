@@ -6,34 +6,12 @@ import 'vuetify/dist/vuetify.min.css';
 import './index.css'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import { VueFire, VueFireAuth } from 'vuefire';
-
-
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-const firebaseConfig = {
-  apiKey: "AIzaSyAJMnEdbsomQQpysguTkLQg8vbxLmBNFYc",
-  authDomain: "festicar-cf2b2.firebaseapp.com",
-  projectId: "festicar-cf2b2",
-  storageBucket: "festicar-cf2b2.appspot.com",
-  messagingSenderId: "330643569363",
-  appId: "1:330643569363:web:0fc0a0de596acdf22ff226"
-};
-
-initializeApp(firebaseConfig);
+import './fireBaseConfig';
 
 const app = createApp(App);
 app.use(router).use(Vuetify);
-app.use(VueFire, {
-  firebaseApp: initializeApp(firebaseConfig),
-  modules: [
-    VueFireAuth(),
-    // Autres modules...
-  ],
-});
-
-
 app.component('VueDatePicker', VueDatePicker);
+
 
 import SignUpModal from '@/components/modals/SignUpModal.vue';
 app.component('SignUpModalVue', SignUpModal);

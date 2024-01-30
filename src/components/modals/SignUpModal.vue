@@ -1,61 +1,70 @@
 <template>
     <div class="signup-modal">
-      <div class="signup-content">
-        <div class="flex-container">
-          <div class="image-container">
-            <img src="../../assets/chat7a.png" alt="Your Image">
-          </div>
-          <div class="formContainer">
-            <button class="close-button-responsive" style="display: none;" @click="closeSignUpModal">×</button>
-            <button class="close-button" @click="closeSignUpModal">×</button>
-            <div class="signup-header">
-              <h2>Inscrivez vous à <span style="color: #F1CE53">Festicar</span></h2>
-              <p style="color: #858585; font-weight: 600;">Vous avez déjà un compte ?<u style="color: #007F5F; margin-left: 5px; cursor: pointer;" v-on:click="openLoginModal()">Se connecter</u> </p>
+        <div class="signup-content">
+            <div class="flex-container">
+                <div class="image-container">
+                    <img src="../../assets/chat7a.png" alt="Your Image">
+                </div>
+                <div class="formContainer">
+                    <button class="close-button-responsive" style="display: none;" @click="closeSignUpModal">×</button>
+                    <button class="close-button" @click="closeSignUpModal">×</button>
+                    <div class="signup-header">
+                        <h2>Inscrivez vous à <span style="color: #F1CE53">Festicar</span></h2>
+                        <p style="color: #858585; font-weight: 600;">Vous avez déjà un compte ?<u
+                                style="color: #007F5F; margin-left: 5px; cursor: pointer;" v-on:click="openLoginModal()">Se
+                                connecter</u> </p>
+                    </div>
+                    <form>
+                        <div class="name-inputs">
+                            <div class="input-group">
+                                <label for="nom">Nom</label>
+                                <input class="custom-input" type="text" id="nom" name="nom" placeholder="Entrez votre nom"
+                                    v-model="user.nom">
+                            </div>
+                            <div class="input-group">
+                                <label for="prenom">Prénom</label>
+                                <input class="custom-input" type="text" id="prenom" name="prenom"
+                                    placeholder="Entrez votre prénom" v-model="user.prenom">
+                            </div>
+                        </div>
+
+                        <div class="name-inputs">
+                            <div class="input-group">
+                                <label for="telephone">Téléphone</label>
+                                <input class="custom-input" type='tel' id='telephone' name='telephone' pattern="[0-9]{10}"
+                                    placeholder='06' v-model="user.telephone">
+                            </div>
+                            <div class="input-group">
+                                <label for="email">E-mail</label>
+                                <input class="custom-input" type="email" id="email" name="email"
+                                    placeholder="Entrez votre email" v-model="user.email">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Mot de passe</label>
+                            <input class="custom-input" type='password' id='password' name='password'
+                                placeholder="Entrez votre mot de passe" v-model="user.mdp">
+                        </div>
+                    </form>
+                    <div class="buttons">
+                        <button class="button" v-on:click="createUser()">S'inscrire</button>
+                        <button class="facebook-button" v-on:click="googleSignIn()">
+                            <span style="display: flex; align-items: center;">Continuer avec
+                                <GoogleIcon style=" margin-left: 3px;" />
+                            </span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <form>
-              <div class="name-inputs">
-                <div class="input-group">
-                  <label for="nom">Nom</label>
-                  <input class="custom-input" type="text" id="nom" name="nom" placeholder="Entrez votre nom" v-model="user.nom">
-                </div>
-                <div class="input-group">
-                  <label for="prenom">Prénom</label>
-                  <input class="custom-input" type="text" id="prenom" name="prenom" placeholder="Entrez votre prénom" v-model="user.prenom">
-                </div>
-              </div>
-  
-              <div class="name-inputs">
-                <div class="input-group">
-                  <label for="telephone">Téléphone</label>
-                  <input class="custom-input" type='tel' id='telephone' name='telephone' pattern="[0-9]{10}" placeholder='06' v-model="user.telephone">
-                </div>
-                <div class="input-group">
-                  <label for="email">E-mail</label>
-                  <input class="custom-input" type="email" id="email" name="email" placeholder="Entrez votre email" v-model="user.email">
-                </div>
-              </div>
-              <div class="input-group">
-                <label>Mot de passe</label>
-                <input class="custom-input" type='password' id='password' name='password' placeholder="Entrez votre mot de passe" v-model="user.password">
-              </div>
-            </form>
-            <div class="buttons">
-              <button class="button" v-on:click="createUser()">S'inscrire</button>
-              <button class="facebook-button">
-                <span style="display: flex; align-items: center;">Continuer avec
-                  <GoogleIcon style=" margin-left: 3px;" />
-                </span>
-              </button>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-  </template>
+</template>
   
 
 <script>
-import api from '@/api'
+import api from '@/api';
+import { authService } from '../../services/authService';
+
 
 export default {
     data() {
@@ -65,7 +74,8 @@ export default {
                 prenom: '',
                 email: '',
                 telephone: '',
-                password: '',
+                mdp: '',
+                typeUtilisateur: 0,
             },
         };
     },
@@ -80,12 +90,34 @@ export default {
         openLoginModal() {
             this.$emit('show-LoginModal');
         },
-        createUser(){
+        createUser() {
             api.createUser(this.user).then((data) => {
                 console.log(data);
                 alert('User created successfully!');
 
-        })}
+            })
+        },
+        /* eslint-disable no-undef */
+        googleSignIn() {
+            authService.signInWithGoogle()
+                .then(result => {
+                    // Extract user information from Google authentication result
+                    this.user.nom = result.user.displayName.split(' ')[1];
+                    this.user.prenom = result.user.displayName.split(' ')[0];
+                    this.user.email = result.user.email;
+                    this.user.telephone = "1231242",
+                    this.user.mdp = "wawawawawawa";
+                    // Call createUser method with extracted user information
+                    this.createUser();
+                    // Close sign-up modal
+                    this.$emit('close-SignUpModal');
+                    console.log("rezultaaaa", result.user.email);
+                })
+                .catch(error => {
+                    // Handle sign-in error
+                });
+        }
+        /* eslint-enable no-undef */
     },
 };
 </script>
