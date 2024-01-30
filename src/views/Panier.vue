@@ -7,7 +7,7 @@
             </h2>
         </div>
         <div class="relative">
-            <div class="grid grid-cols-12 gap-8 panier" style='position: relative;'>
+            <div class="grid grid-cols-12 gap-8 panier" style='position: relative   ;'>
                 <div class="col-span-6 flex items-center">
                     <div class="ml-2">
                         <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
