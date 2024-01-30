@@ -21,7 +21,7 @@
           <div class="buttons">
             <button class="button">Connexion</button>
             <button class="facebook-button">
-              <span @click="loginWithFacebook" style="display: flex; align-items: center;">Continuer avec
+              <span @click="googleSignIn()" style="display: flex; align-items: center;">Continuer avec
                 <GoogleIcon style=" margin-left: 3px;" />
               </span>
             </button>
@@ -40,14 +40,7 @@
   
 <script>
 import GoogleIcon from "../Icons/GoogleIcon.vue";
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import { useFirebaseAuth } from 'vuefire'
-import { GoogleAuthProvider } from 'firebase/auth'
-import { signInWithPopup } from 'firebase/auth'
-
-const auth = useFirebaseAuth()
-const googleAuthProvider = new GoogleAuthProvider()
+import { authService } from '../../services/authService';
 
 export default {
   props: {
@@ -57,7 +50,6 @@ export default {
   },
   name: "LoginModal",
   created() {
-    console.log(firebase);
   },
   methods: {
     closeLoginModal() {
@@ -66,23 +58,24 @@ export default {
     openSignUpModal() {
       this.$emit('show-SignUpModal');
     },
-    signinPopup() {
-      signInWithPopup(auth, googleAuthProvider)
-        .then((result) => {
-          // Connexion réussie, récupérer les informations nécessaires du résultat
-          let token = result.credential.accessToken;
-          let user = result.user;
-          console.log('Token:', token); // Afficher le token d'accès
-          console.log('User:', user); // Afficher les informations de l'utilisateur authentifié
-          // Effectuez d'autres actions en fonction du résultat de la connexion réussie
+    /* eslint-disable no-undef */
+    googleSignIn() {
+      authService.signInWithGoogle()
+        .then(result => {
+          // Extract user information from Google authentication result
+          this.user.nom = result.user.displayName.split(' ')[1];
+          this.user.prenom = result.user.displayName.split(' ')[0];
+          this.user.email = result.user.email;
+          this.user.telephone = "0606060606",
+          this.user.mdp = "niestzche-vous";
+          // Close sign-up modal
+          this.$emit('close-LoginModal');
         })
-        .catch((reason) => {
-          // Gestion des erreurs en cas d'échec de la connexion
-          console.error('Failed sign', reason);
+        .catch(error => {
+          // Handle sign-in error
         });
-    },created(){
-      console.log(useFirebaseAuth());
     }
+    /* eslint-enable no-undef */
 
   },
 };
