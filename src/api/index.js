@@ -26,8 +26,19 @@ class Api {
 
         // Supprimez le dernier '&' de l'URL
         url = url.slice(0, -1);
-        console.log(url)
 
+        return this.axios.get(url);
+    }
+
+    getCovoiturageByCriteriaAndFestivalId(festivalId,nomCommune,modelVoiture,placesDispo,budget){
+        let url = '/api/covoituragesCriteria?festivalId='+festivalId+'&numPage=1&taille=10&';
+        
+        if (nomCommune) url += `nomCommune=${nomCommune}&`;
+        if (modelVoiture) url += `modelVoiture=${modelVoiture}&`;
+        if (placesDispo) url += `placeDispo=${placesDispo}&`;
+        if (budget) url += `budget=${budget}&`;
+        
+        url = url.slice(0, -1);
         return this.axios.get(url);
     }
 
@@ -41,6 +52,14 @@ class Api {
 
     createUser(user){
         return this.axios.post('/api/utilisateur/',user);
+    }
+
+    createPanier(utilisateurId,panier){
+        return this.axios.post(`/api/panier/${utilisateurId}`,panier);
+    }
+
+    getModelVoiture(){
+        return this.axios.get('/api/Covoiturage/ModeleVoiture');
     }
 }
 

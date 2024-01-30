@@ -13,26 +13,26 @@
             <div class="location">
                 <p>Départ</p>
                 <!-- remove the outline from the input-->
-                <input type="text" placeholder="Ville de départ" v-model="nomFestival">
+                <input type="text" placeholder="Ville de départ" v-model="ville">
             </div>
             <div class="domain">
                 <p>Véhicule</p>
-                <select v-model="domaine">
+                <select v-model="modele">
                     <option value="" style="font-size:2px !important" disabled selected>Type de véhicule</option>
                     <!-- Placeholder -->
-                    <option v-for="(typeV, index) in typesVehicule" :key="index" :value="typeV">{{ typeV.nomDomaine }}
+                    <option v-for="(typeV, index) in typesVehicule" :key="index" :value="typeV">{{ typeV }}
                     </option>
                 </select>
             </div>
             <div class="domain">
                 <p>Places disponibles</p>
-                <input type="text" placeholder="Nombre de places disponibles" v-model="ville">
+                <input type="text" placeholder="Nombre de places disponibles" v-model="placeDispo">
             </div>
             <div class="domain">
                 <p>Budget</p>
                 <input type="text" placeholder="Quel est votre budget max ?" v-model="prix">
             </div>
-            <div class="icon" v-on:click="getFestivalsWithCriterias()">
+            <div class="icon" v-on:click="getCovWithCriterias()">
                 <div class="backgIcon">
                     <SearchIcon color='white' />
                 </div>
@@ -44,7 +44,7 @@
     <div class="mt-32"></div>
     <!-- Covoiturage -->
     <div class="relative">
-        <div v-for="(covoiturage, index) in covoiturages" :key="index" class="grid grid-cols-12 gap-8 panier">
+        <div v-for="(covoiturage, index) in covoiturages" v-show="covoiturage.nbPlaces - covoiturage.nbPlacesReservées > 0" :key="index" class="grid grid-cols-12 gap-8 panier">
             <div class="col-span-6 flex items-center">
                 <div class="ml-2">
                     <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
@@ -65,7 +65,7 @@
             </div>
 
             <div class="col-span-6 text-right">
-                <p class="prix">{{covoiturage.tarif}} €</p>
+                <p class="prix">{{covoiturage.tarif * covoiturage.counter}} €</p>
             </div>
             <div class="col-span-2 relative h-4  flex items-center">
                 <div class="ml-5 flex flex-col justify-center">
@@ -82,10 +82,15 @@
                 </div>
             </div>
 
-            <div class="col-span-10 h-4" style="margin-top:-10px">
-                <p class="text-sm font-medium">UFR IM2AG</p>
-                <p class="text-sm font-small">Saint-Martin-d’hères</p>
-            </div>
+            <template v-for="(arret, arretIndex) in covoiturage.arretCovoiturageList" :key="arretIndex">
+                <template v-if="arret.estDepart">
+                    <div class="col-span-10 h-4" style="margin-top:-10px">
+                        <p class="text-sm font-medium">{{ arret.lieuCovoiturage.nomLieu }}</p>
+                        <p class="text-sm font-small">{{ arret.lieuCovoiturage.codeInsee?.nomCommune }}, {{ convertirTypeLieu(arret.lieuCovoiturage.typeLieu) }}</p>
+                    </div>
+                </template>
+            </template>
+   
             <div class="col-span-2 relative h-4  items-center">
                 <div class="ml-5 mt-8 hourDown">
                     <p class="text-sm font-medium">20:00</p>
@@ -101,18 +106,19 @@
                 <p class="text-sm font-medium" >Nombre de places disponibles &nbsp;:&nbsp; {{covoiturage.nbPlaces - covoiturage.nbPlacesReservées }}</p>
                 <form class="max-w-xs ml-4">
                     <div class="relative flex items-center">
-                        <div v-on:click="decrementCounter()" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
+                        <div v-on:click="decrementCounter(covoiturage)" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
                             -
                         </div>
-                        <input type="text" id="counter-input" data-input-counter class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" placeholder="" value="12" v-model="counter" required>
-                        <div v-on:click="incrementCounter()" type="button" id="increment-button" data-input-counter-increment="counter-input">
+                        <input type="text" id="counter-input" data-input-counter 
+                        class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" value="12" v-model="covoiturage.counter" required>
+                        <div v-on:click="incrementCounter(covoiturage,covoiturage.nbPlaces,covoiturage.nbPlacesReservées)" type="button" id="increment-button" data-input-counter-increment="counter-input">
                             +
                         </div>
                     </div>
                 </form>
             </div>
             <div class="col-span-6 h-4 mt-8 justify-end">
-                <div class="addToCart">Ajouter au panier</div>
+                <div class="addToCart" v-on:click="ajouterAuPanier()">Ajouter au panier</div>
             </div>
         </div>
         <div class="flex justify-center items-center">
@@ -128,27 +134,46 @@
 
 <script>
 import api from '@/api';
+import { myMixins } from '@/mixins/myMixins';
+
+const fakePanier = { total: 10 }
 export default {
     name: 'CovoiturageView',
+    mixins: [myMixins],
     data() {
         return {
             counter: 0,
             typesVehicule: [],
-            domaine: '',
+            modele: '',
             covoiturages: [],
             destination: '',
             loading: true,
             limit: 10,
             page: 1,
+            placeDispo: null,
+            test: [],
+            ville: '',
+            prix: '',
         }
     },
     methods: {
-        incrementCounter() {
-            this.counter += 1;
+        getCovWithCriterias() {
+            api.getCovoiturageByCriteriaAndFestivalId(this.$route.params.festivalId, this.ville, this.modele,
+                this.placeDispo, this.prix).then((data) => {
+                    console.log(data);
+                })
         },
-        decrementCounter() {
-            if (this.counter != 0)
-                this.counter -= 1;
+        incrementCounter(covoiturage,nbPlaces,nbRes) {
+            console.log(nbPlaces-nbRes);
+            if((nbPlaces-nbRes) == covoiturage.counter){
+                covoiturage.counter;
+            }else{
+                covoiturage.counter += 1;
+            }
+        },
+        decrementCounter(covoiturage) {
+            if (covoiturage.counter != 1)
+                covoiturage.counter -= 1;
         },
         voirPlus() {
             if (this.tousCovoituragesChargees) {
@@ -160,10 +185,32 @@ export default {
             this.loading = true;
             api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.page, this.limit)
                 .then((data) => {
-                    this.covoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false }));
+                    const nouveauxCovoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false,counter: 1  }));
+                    this.covoiturages.push(...nouveauxCovoiturages);
                     this.destination = this.covoiturages[0].festival.nomFestival;
                     this.loading = false;
                 });
+        },
+        ajouterAuPanier() {
+            let idAnonymousUser;
+            api.createUser({
+                nom: 'Anonymous',
+                prenom: 'Anonymous',
+                email: this.generateRandomEmail(),
+                telephone: this.generateRandomPhoneNumber(),
+                mdp: 'Anonymous',
+                typeUtilisateur: 0,
+            }).then(data => {
+                let user = {}
+                user = data.data;
+                localStorage.setItem('anonymousUserId', user.id);
+                idAnonymousUser = user.id;
+
+                api.createPanier(idAnonymousUser, fakePanier).then(panier => {
+                    localStorage.setItem('anonymousPanierId', panier.data.idPanier);
+                    console.log(panier);
+                })
+            })
         }
     },
     computed: {
@@ -173,7 +220,7 @@ export default {
     },
     mounted() {
         this.fetchCovoiturages();
-        api.getDomaines().then((data) => {
+        api.getModelVoiture().then((data) => {
             this.typesVehicule = data.data;
         });
     },
