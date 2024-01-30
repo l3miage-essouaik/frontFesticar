@@ -25,7 +25,7 @@
 
                     <!-- Button "J'y vais" -->
                     <div class="text-center">
-                        <router-link :to="`/covoiturage/${festival.idFestival}?numPage=1&taillePage=10`" class="attend-button mx-auto block" >J'y vais</router-link>
+                        <router-link :to="`/covoiturage/${festival.idFestival}`" class="attend-button mx-auto block" >J'y vais</router-link>
                     </div>
                 </div>
             </div>

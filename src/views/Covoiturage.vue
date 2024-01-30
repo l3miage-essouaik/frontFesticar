@@ -3,7 +3,7 @@
     <!-- Title "Destination <Name of the festival that we clicked on to get here>"-->
     <div class="flex flex-col items-center">
         <h2 class="text-4xl font-extrabold dark:text-white title">
-            Destination Hellfest
+            Destination {{destination}}
         </h2>
     </div>
     <!-- a horizontal 1pt line to separate the title from the content -->
@@ -50,20 +50,22 @@
                     <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
                 </div>
                 <div>
-                    <p class="text-sm font-medium ml-2">Rass Lavoka</p>
+                    <p class="text-sm font-medium ml-2">{{covoiturage.utilisateur.nom}} {{covoiturage.utilisateur.prenom}}</p>
                     <p class="text-xs text-gray-500 ml-2">Conducteur</p>
                 </div>
-                <div class="ml-5" @mouseover="showInfo = true" @mouseleave="showInfo = false">
+                <div class="ml-5" @mouseover="covoiturage.showInfo = true" @mouseleave="covoiturage.showInfo = false">
                     <div class="information"> ℹ</div>
-                    <div class="tooltip" v-if="showInfo">
-                        <p>Type de voiture: SUV</p>
-                        <p>Nombre de passagers: {{ counter }}</p>
+                    <div class="tooltip" v-if="covoiturage.showInfo">
+                        <p>Type de voiture: {{covoiturage.modelVoiture}}</p>
+                        <p>Modèle: {{covoiturage.marque}} </p>
+                        <p>Couleur: {{covoiturage.couleur}} </p>
+                        <p>Nombre de passagers: {{ covoiturage.nbPlacesReservées }}</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-span-6 text-right">
-                <p class="prix">66,6€</p>
+                <p class="prix">{{covoiturage.tarif}} €</p>
             </div>
             <div class="col-span-2 relative h-4  flex items-center">
                 <div class="ml-5 flex flex-col justify-center">
@@ -90,12 +92,13 @@
                 </div>
             </div>
             <div class="col-span-10 h-4  mt-8">
-                <p class="text-sm font-medium">Hellfest</p>
-                <p class="text-sm font-small">Clisson Loire Atlantique</p>
+                <p class="text-sm font-medium">{{destination}}</p>
+                <p class="text-sm font-small">{{ covoiturage.festival.commune && covoiturage.festival.commune.nomCommune ? covoiturage.festival.commune.nomCommune : 'Neverland' }}, 
+                {{ covoiturage.festival.commune && covoiturage.festival.commune.departement && covoiturage.festival.commune.departement.nomDepartement 
+                ? covoiturage.festival.commune.departement.nomDepartement : 'Neverland' }}</p>
             </div>
             <div class="col-span-6 h-4 mt-8 flex justify-between items-center">
-                <p class="text-sm font-medium" v-if="counter>1">Nombre de places disponibles &nbsp;:&nbsp; {{counter}}</p>
-                <p class="text-sm font-medium" v-else>Nombre de place disponible &nbsp;:&nbsp; {{counter}}</p>
+                <p class="text-sm font-medium" >Nombre de places disponibles &nbsp;:&nbsp; {{covoiturage.nbPlaces - covoiturage.nbPlacesReservées }}</p>
                 <form class="max-w-xs ml-4">
                     <div class="relative flex items-center">
                         <div v-on:click="decrementCounter()" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
@@ -112,6 +115,13 @@
                 <div class="addToCart">Ajouter au panier</div>
             </div>
         </div>
+        <div class="flex justify-center items-center">
+            <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlus()"
+                v-if="!loading"
+                :class="{ 'disabledButton': !tousCovoituragesChargees }">
+                Voir plus
+            </button>
+        </div>
     </div>
 </div>
 </template>
@@ -125,8 +135,11 @@ export default {
             counter: 0,
             typesVehicule: [],
             domaine: '',
-            showInfo: false,
-            covoiturages: []
+            covoiturages: [],
+            destination: '',
+            loading: true,
+            limit: 10,
+            page: 1,
         }
     },
     methods: {
@@ -136,12 +149,30 @@ export default {
         decrementCounter() {
             if (this.counter != 0)
                 this.counter -= 1;
+        },
+        voirPlus() {
+            if (this.tousCovoituragesChargees) {
+                this.page += 1;
+                this.fetchCovoiturages();
+            }
+        },
+        fetchCovoiturages() {
+            this.loading = true;
+            api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.page, this.limit)
+                .then((data) => {
+                    this.covoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false }));
+                    this.destination = this.covoiturages[0].festival.nomFestival;
+                    this.loading = false;
+                });
+        }
+    },
+    computed: {
+        tousCovoituragesChargees() {
+            return this.covoiturages.length >= this.page * this.limit;
         }
     },
     mounted() {
-        api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.$route.query.numPage, this.$route.query.taillePage).then((data) => {
-            this.covoiturages = data.data;
-        })
+        this.fetchCovoiturages();
         api.getDomaines().then((data) => {
             this.typesVehicule = data.data;
         });
@@ -151,6 +182,16 @@ export default {
 </script>
 
 <style scoped>
+.voirPlus {
+    border: 1px solid #4AD3B8;
+    color: #4AD3B8;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 0px;
+    margin: 5% 0%;
+    width: 10%;
+}
+
 .addToCart {
     border: 1px solid #F1CE53;
     padding: 10px;
@@ -190,6 +231,12 @@ export default {
     padding: 1px 6px;
     cursor: pointer;
     font-size: 11px;
+}
+
+.disabledButton {
+    color: rgb(141, 141, 141) !important;
+    cursor: not-allowed ! important;
+    border: 1px solid rgb(141, 141, 141) !important;
 }
 
 .bar {
