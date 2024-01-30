@@ -1,122 +1,121 @@
 <template lang="">
-    <div>
-        <!-- Title "Destination <Name of the festival that we clicked on to get here>"-->
-            <div class="flex flex-col items-center">
-                <h2 class="text-4xl font-extrabold dark:text-white title">
-                    Destination Hellfest
-                </h2>
+<div>
+    <!-- Title "Destination <Name of the festival that we clicked on to get here>"-->
+    <div class="flex flex-col items-center">
+        <h2 class="text-4xl font-extrabold dark:text-white title">
+            Destination Hellfest
+        </h2>
+    </div>
+    <!-- a horizontal 1pt line to separate the title from the content -->
+    <hr class="mt-5 mb-5" style="border: -0.5px solid #054652; width: 100%;">
+    <div class="z-10">
+        <div class="bar">
+            <div class="location">
+                <p>Départ</p>
+                <!-- remove the outline from the input-->
+                <input type="text" placeholder="Ville de départ" v-model="nomFestival">
             </div>
-        <!-- a horizontal 1pt line to separate the title from the content -->
-        <hr class="mt-5 mb-5" style="border: -0.5px solid #054652; width: 100%;">
-        <div class="z-10">
-            <div class="bar">
-                <div class="location">
-                    <p>Départ</p>
-                    <!-- remove the outline from the input-->
-                    <input type="text" placeholder="Ville de départ" v-model="nomFestival">
+            <div class="domain">
+                <p>Véhicule</p>
+                <select v-model="domaine">
+                    <option value="" style="font-size:2px !important" disabled selected>Type de véhicule</option>
+                    <!-- Placeholder -->
+                    <option v-for="(typeV, index) in typesVehicule" :key="index" :value="typeV">{{ typeV.nomDomaine }}
+                    </option>
+                </select>
+            </div>
+            <div class="domain">
+                <p>Places disponibles</p>
+                <input type="text" placeholder="Nombre de places disponibles" v-model="ville">
+            </div>
+            <div class="domain">
+                <p>Budget</p>
+                <input type="text" placeholder="Quel est votre budget max ?" v-model="prix">
+            </div>
+            <div class="icon" v-on:click="getFestivalsWithCriterias()">
+                <div class="backgIcon">
+                    <SearchIcon color='white' />
                 </div>
-                <div class="domain">
-                    <p>Véhicule</p>
-                    <select v-model="domaine">
-                        <option value="" style="font-size:2px !important" disabled selected>Type de véhicule</option>
-                        <!-- Placeholder -->
-                        <option v-for="(typeV, index) in typesVehicule" :key="index" :value="typeV">{{ typeV.nomDomaine }}
-                        </option>
-                    </select>
-                </div>
-                <div class="domain">
-                    <p>Places disponibles</p>
-                    <input type="text" placeholder="Nombre de places disponibles" v-model="ville">
-                </div>
-                <div class="domain">
-                    <p>Budget</p>
-                    <input type="text" placeholder="Quel est votre budget max ?" v-model="prix">
-                </div>
-                <div class="icon" v-on:click="getFestivalsWithCriterias()">
-                    <div class="backgIcon">
-                        <SearchIcon color='white' />
-                    </div>
-                </div>
-            </div>   
-              <!--  -->
+            </div>
         </div>
-        <!-- white space to separate the bar from the content -->
-        <div class="mt-32"></div>
-        <!-- Covoiturage -->
-        <div class="relative" >
-            <div v-for="(covoiturage, index) in covoiturages" :key="index" class="grid grid-cols-12 gap-8 panier">
-                <div class="col-span-6 flex items-center">
-                    <div class="ml-2">
-                        <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium ml-2">Rass Lavoka</p>
-                        <p class="text-xs text-gray-500 ml-2">Conducteur</p>
-                    </div>
-                    <div class="ml-5" @mouseover="showInfo = true" @mouseleave="showInfo = false">
-                    <div class="information"> ℹ</div> 
-                        <div class="tooltip" v-if="showInfo">
-                            <p>Type de voiture: SUV</p>
-                            <p>Nombre de passagers: {{ counter }}</p>
-                        </div>
+        <!--  -->
+    </div>
+    <!-- white space to separate the bar from the content -->
+    <div class="mt-32"></div>
+    <!-- Covoiturage -->
+    <div class="relative">
+        <div v-for="(covoiturage, index) in covoiturages" :key="index" class="grid grid-cols-12 gap-8 panier">
+            <div class="col-span-6 flex items-center">
+                <div class="ml-2">
+                    <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
+                </div>
+                <div>
+                    <p class="text-sm font-medium ml-2">Rass Lavoka</p>
+                    <p class="text-xs text-gray-500 ml-2">Conducteur</p>
+                </div>
+                <div class="ml-5" @mouseover="showInfo = true" @mouseleave="showInfo = false">
+                    <div class="information"> ℹ</div>
+                    <div class="tooltip" v-if="showInfo">
+                        <p>Type de voiture: SUV</p>
+                        <p>Nombre de passagers: {{ counter }}</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-span-6 text-right">
-                    <p class="prix">66,6€</p>
-                </div>
-                <div class="col-span-2 relative h-4  flex items-center">
-                    <div class="ml-5 flex flex-col justify-center">
-                        <div class="hour">
-                            <p class="text-sm font-medium">16:30</p>
-                            <p class="text-sm font-small">6h30</p>
-                        </div>
-                    </div>
-                    <div class="containerCircle flex items-center ml-2">
-                        <div class="circle"></div>
-                        <div class="line"></div>
-                        <div class="circleDown flex items-start">
-                        </div>
+            <div class="col-span-6 text-right">
+                <p class="prix">66,6€</p>
+            </div>
+            <div class="col-span-2 relative h-4  flex items-center">
+                <div class="ml-5 flex flex-col justify-center">
+                    <div class="hour">
+                        <p class="text-sm font-medium">16:30</p>
+                        <p class="text-sm font-small">6h30</p>
                     </div>
                 </div>
+                <div class="containerCircle flex items-center ml-2">
+                    <div class="circle"></div>
+                    <div class="line"></div>
+                    <div class="circleDown flex items-start">
+                    </div>
+                </div>
+            </div>
 
-                <div class="col-span-10 h-4" style="margin-top:-10px">
-                    <p class="text-sm font-medium">UFR IM2AG</p>
-                    <p class="text-sm font-small">Saint-Martin-d’hères</p>
+            <div class="col-span-10 h-4" style="margin-top:-10px">
+                <p class="text-sm font-medium">UFR IM2AG</p>
+                <p class="text-sm font-small">Saint-Martin-d’hères</p>
+            </div>
+            <div class="col-span-2 relative h-4  items-center">
+                <div class="ml-5 mt-8 hourDown">
+                    <p class="text-sm font-medium">20:00</p>
                 </div>
-                <div class="col-span-2 relative h-4  items-center">
-                    <div class="ml-5 mt-8 hourDown">
-                        <p class="text-sm font-medium">20:00</p>
+            </div>
+            <div class="col-span-10 h-4  mt-8">
+                <p class="text-sm font-medium">Hellfest</p>
+                <p class="text-sm font-small">Clisson Loire Atlantique</p>
+            </div>
+            <div class="col-span-6 h-4 mt-8 flex justify-between items-center">
+                <p class="text-sm font-medium" v-if="counter>1">Nombre de places disponibles &nbsp;:&nbsp; {{counter}}</p>
+                <p class="text-sm font-medium" v-else>Nombre de place disponible &nbsp;:&nbsp; {{counter}}</p>
+                <form class="max-w-xs ml-4">
+                    <div class="relative flex items-center">
+                        <div v-on:click="decrementCounter()" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
+                            -
+                        </div>
+                        <input type="text" id="counter-input" data-input-counter class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" placeholder="" value="12" v-model="counter" required>
+                        <div v-on:click="incrementCounter()" type="button" id="increment-button" data-input-counter-increment="counter-input">
+                            +
+                        </div>
                     </div>
-                </div>
-                <div class="col-span-10 h-4  mt-8">
-                    <p class="text-sm font-medium">Hellfest</p>
-                    <p class="text-sm font-small">Clisson Loire Atlantique</p>
-                </div>
-                <div class="col-span-6 h-4 mt-8 flex justify-between items-center">
-                    <p class="text-sm font-medium" v-if="counter>1">Nombre de places disponibles &nbsp;:&nbsp; {{counter}}</p>
-                    <p class="text-sm font-medium" v-else>Nombre de place disponible &nbsp;:&nbsp; {{counter}}</p>
-                    <form class="max-w-xs ml-4">
-                            <div class="relative flex items-center">
-                                <div v-on:click="decrementCounter()" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
-                                    -
-                                </div>
-                                <input type="text" id="counter-input" data-input-counter
-                                    class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
-                                    placeholder="" value="12" v-model="counter" required>
-                                <div v-on:click="incrementCounter()" type="button" id="increment-button" data-input-counter-increment="counter-input">
-                                    +
-                                </div>
-                            </div>
-                        </form>
-                </div>
-                <div class="col-span-6 h-4 mt-8 justify-end">
-                    <div class="addToCart" >Ajouter au panier</div>
-                </div>
+                </form>
+            </div>
+            <div class="col-span-6 h-4 mt-8 justify-end">
+                <div class="addToCart">Ajouter au panier</div>
             </div>
         </div>
     </div>
+</div>
 </template>
+
 <script>
 import api from '@/api';
 export default {
@@ -127,7 +126,7 @@ export default {
             typesVehicule: [],
             domaine: '',
             showInfo: false,
-            covoiturages:[]
+            covoiturages: []
         }
     },
     methods: {
@@ -140,7 +139,7 @@ export default {
         }
     },
     mounted() {
-        api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.$route.query.numPage, this.$route.query.taillePage).then((data)=>{
+        api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.$route.query.numPage, this.$route.query.taillePage).then((data) => {
             this.covoiturages = data.data;
         })
         api.getDomaines().then((data) => {
@@ -150,8 +149,9 @@ export default {
 
 }
 </script>
+
 <style scoped>
-.addToCart{
+.addToCart {
     border: 1px solid #F1CE53;
     padding: 10px;
     font-size: 14px;
@@ -162,11 +162,12 @@ export default {
     color: #F1CE53;
 }
 
-.addToCart:hover{
+.addToCart:hover {
     background-color: #F1CE53;
     color: #fff;
     transition: ease-in 0.2s;
 }
+
 .tooltip {
     position: absolute;
     top: 20px;
@@ -295,7 +296,6 @@ input {
     padding-right: 30px;
 }
 
-
 input[type="text"] {
     background: none;
     border: none;
@@ -351,7 +351,6 @@ input[type="text"]:focus {
     background: transparent;
 }
 
-
 .bar>div:hover::before {
     background: transparent;
 }
@@ -389,7 +388,7 @@ select:focus {
 
 }
 
-#increment-button{
+#increment-button {
     border-radius: 100%;
     background-color: transparent;
     color: #054652 !important;
@@ -398,7 +397,8 @@ select:focus {
     padding: 0px 5px;
 
 }
-#decrement-button{
+
+#decrement-button {
     border-radius: 100%;
     background-color: transparent;
     color: #054652 !important;
@@ -491,8 +491,6 @@ p {
     left: 50%;
     transform: translateX(-50%);
 }
-
-
 
 .title {
     color: #054652;
