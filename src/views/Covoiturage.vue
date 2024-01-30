@@ -126,7 +126,7 @@ export default {
             counter: 0,
             typesVehicule: [],
             domaine: '',
-            showInfo: true,
+            showInfo: false,
             covoiturages:[]
         }
     },
@@ -426,9 +426,9 @@ p {
     width: 70%;
     height: 300px;
     flex-shrink: 0;
-    margin: 0 auto;
+    margin: 0;
     box-sizing: border-box;
-    position: absolute;
+    position: relative;
     top: 0;
     left: 50%;
     transform: translate(-50%, 0);
