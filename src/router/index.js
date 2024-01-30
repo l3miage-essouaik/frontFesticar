@@ -18,12 +18,12 @@ const routes = [
     component: PanierView,
   },
   {
-    path: '/festival',
+    path: '/festival/:id',
     name : 'Festival',
     component: FestivalView,
   },
   {
-    path: '/covoiturage',
+    path: '/covoiturage/:festivalId',
     name : 'Covoiturage',
     component: () => CovoiturageView,
   }

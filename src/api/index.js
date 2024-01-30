@@ -11,9 +11,10 @@ class Api {
         return this.axios.get('/api/allFestivals'); 
     }
 
-    getDomaines(){
-        return this.axios.get('/api/domains'); 
+    getFestivalById(id){
+        return this.axios.get('/api/Festival/'+id)
     }
+
     getFestivalsWithcriterias(nomFestival,dateDebut,dateFin,tarif,sousDomaine){
         let url = '/api/festivals/?';
 
@@ -28,6 +29,14 @@ class Api {
         console.log(url)
 
         return this.axios.get(url);
+    }
+
+    getCovoiturageByFestivalId(idFestival, numPage, taillePage){
+        return this.axios.get(`/api/Covoiturage/${idFestival}?numPage=${numPage}&taillePage=${taillePage}`)
+    }
+
+    getDomaines(){
+        return this.axios.get('/api/domains'); 
     }
 
     createUser(user){

@@ -37,13 +37,14 @@
                         <SearchIcon color='white' />
                     </div>
                 </div>
-            </div>
+            </div>   
+              <!--  -->
         </div>
         <!-- white space to separate the bar from the content -->
         <div class="mt-32"></div>
         <!-- Covoiturage -->
-        <div class="relative">
-            <div class="grid grid-cols-12 gap-8 panier">
+        <div class="relative" >
+            <div v-for="(covoiturage, index) in covoiturages" :key="index" class="grid grid-cols-12 gap-8 panier">
                 <div class="col-span-6 flex items-center">
                     <div class="ml-2">
                         <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
@@ -53,7 +54,7 @@
                         <p class="text-xs text-gray-500 ml-2">Conducteur</p>
                     </div>
                     <div class="ml-5" @mouseover="showInfo = true" @mouseleave="showInfo = false">
-                    <div class="information"> &#9432;</div> 
+                    <div class="information"> ℹ</div> 
                         <div class="tooltip" v-if="showInfo">
                             <p>Type de voiture: SUV</p>
                             <p>Nombre de passagers: {{ counter }}</p>
@@ -125,7 +126,8 @@ export default {
             counter: 0,
             typesVehicule: [],
             domaine: '',
-            showInfo: false
+            showInfo: true,
+            covoiturages:[]
         }
     },
     methods: {
@@ -138,10 +140,14 @@ export default {
         }
     },
     mounted() {
+        api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.$route.query.numPage, this.$route.query.taillePage).then((data)=>{
+            this.covoiturages = data.data;
+        })
         api.getDomaines().then((data) => {
             this.typesVehicule = data.data;
         });
     },
+
 }
 </script>
 <style scoped>
@@ -177,12 +183,12 @@ export default {
 }
 
 .information {
+    border: 2px solid #054652;
     color: #054652;
     border-radius: 100%;
     padding: 1px 6px;
     cursor: pointer;
-    font-size: 18px;
-    font-weight: 900;
+    font-size: 11px;
 }
 
 .bar {

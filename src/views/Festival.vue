@@ -14,18 +14,18 @@
                 <!-- Texte sous l'image -->
                 <div class="text-container">
                     <!-- Titre du festival -->
-                    <h2 class="festival-name">Hellfest</h2>
+                    <h2 class="festival-name">{{ festival.nomFestival }}</h2>
 
                     <!-- Grid of festival details -->
                     <div class="festival-details">
-                        <div>Date: 2024-06-21</div>
-                        <div>Lieu: Clisson, France</div>
-                        <div>Artiste principal: Artist Name</div>
+                        <div>Date <br> {{getFormattedDate(festival.dateDebut)}} - {{getFormattedDate(festival.dateFin)}}</div>
+                        <div>Lieu <br> {{ festival.commune && festival.commune.nomCommune ? festival.commune.nomCommune : 'Neverland' }}, {{ festival.commune && festival.commune.departement && festival.commune.departement.nomDepartement ? festival.commune.departement.nomDepartement : 'Neverland' }}</div>
+                        <div style="word-wrap: break-word; overflow-wrap: break-word;">Domaine   <br> {{ festival.sousDomaine?.nomSousDomaine }} </div>
                     </div>
 
                     <!-- Button "J'y vais" -->
                     <div class="text-center">
-                        <button class="attend-button mx-auto block">J'y vais</button>
+                        <router-link :to="`/covoiturage/${festival.idFestival}?numPage=1&taillePage=10`" class="attend-button mx-auto block" >J'y vais</router-link>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
             style="margin-left: 3%; margin-right: 3%;">
-            <article
+            <a :href="'/festival/'+festival.idFestival"
                 v-for="(festival, index) in (festivals).slice(0, limit)"
                 :key="index"
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-7 mb-7 w-full">
@@ -47,7 +47,7 @@
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{
                     getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
         !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
-            </article>
+            </a>
         </div>
     </div>
 </template>
@@ -64,10 +64,16 @@ export default {
     data(){
         return {
             festivals: [],
+            festival : {},
             limit:4,
         }
     },
     mounted() {
+        const festivalId = this.$route.params.id;
+        api.getFestivalById(festivalId).then((data)=>{
+            this.festival = data.data;
+            console.log(this.festival);
+        })
         api.getFestivals().then((data) => {
             this.festivals = data.data;
         })

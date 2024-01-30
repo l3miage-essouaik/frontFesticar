@@ -68,7 +68,7 @@
         </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
             style="margin-left: 3%; margin-right: 3%;">
-            <article
+            <router-link :to="`/festival/${festival.idFestival}`"
                 v-for="(festival, index) in (festivalsFiltered.length > 0 ? festivalsFiltered : festivals).slice(0, limit)"
                 :key="index"
                 class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-7 w-full">
@@ -79,7 +79,11 @@
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{
                     getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
                     !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
-            </article>
+            </router-link>
+            <span v-for="(festival, index) in (festivalsFiltered.length > 0 ? festivalsFiltered : festivals).slice(0, limit)"
+                :key="index">
+                {{ festival }}
+            </span>
         </div>
         <div class="flex justify-center items-center">
             <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlusFestival()"
