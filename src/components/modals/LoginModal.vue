@@ -20,8 +20,8 @@
           </form>
           <div class="buttons">
             <button class="button">Connexion</button>
-            <button class="facebook-button">
-              <span @click="loginWithFacebook" style="display: flex; align-items: center;">Continuer avec
+            <button class="facebook-button" @click="googleSignIn">
+              <span style="display: flex; align-items: center;">Continuer avec
                 <FacebookIcon style=" margin-left: 3px;" />
               </span>
             </button>
@@ -42,7 +42,7 @@
 import FacebookIcon from "../Icons/FacebookIcon.vue";
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { getAuth,signInWithPopup, FacebookAuthProvider } from "firebase/auth";
+import { authService } from '../../services/authService';
 
 export default {
   props: {
@@ -61,23 +61,18 @@ export default {
     openSignUpModal() {
       this.$emit('show-SignUpModal');
     },
-    loginWithFacebook() {
-      const provider = new FacebookAuthProvider();
-      const auth = getAuth();
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const user = result.user;
-          const credential = FacebookAuthProvider.credentialFromResult(result);
-          const accessToken = credential.accessToken;
-
+    /* eslint-disable no-undef */
+    googleSignIn() {
+      authService.signInWithGoogle()
+        .then(result => {
+          // Handle successful sign-in
+          this.$emit('close-LoginModal');
         })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          const email = error.customData.email;
-          const credential = FacebookAuthProvider.credentialFromError(error);
+        .catch(error => {
+          // Handle sign-in error
         });
     }
+    /* eslint-enable no-undef */
   },
 };
 </script>

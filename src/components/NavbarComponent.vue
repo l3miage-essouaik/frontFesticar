@@ -11,31 +11,64 @@
                         class="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500">
                         <CartIcon />
                     </router-link>
-                    <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
-                        class="flex items-center justify-between py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
-                        <UserIcon />
-                        <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 4 4 4-4" />
-                        </svg>
-                    </button>
-
-                    <!-- Dropdown menu -->
-                    <div id="dropdownNavbar"
-                        class="z-10 hidden f    ont-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
-                            <li>
-                                <a href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    v-on:click="openLoginModal()">Connexion</a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    v-on:click="openSignUpModal()">Inscription</a>
-                            </li>
-                        </ul>
+                    <div v-if="!isSignedIn">
+                        <!-- Normal dropdown for non-authenticated users -->
+                        <!-- Dropdown button for normal dropdown -->
+                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" v-on:click="showSignIn = !showSignIn"
+                            class="flex items-center justify-between py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
+                            <UserIcon />
+                            <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m1 1 4 4 4-4" />
+                            </svg>
+                        </button>
+                        <!-- Normal dropdown menu -->
+                        <div id="dropdownNavbar" v-if="showSignIn"
+                            class="z-10 absolute font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-400">
+                                <li>
+                                    <a href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        v-on:click="openLoginModal()">Connexion</a>
+                                </li>
+                                <li>
+                                    <a href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        v-on:click="openSignUpModal()">Inscription</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <!-- User dropdown for authenticated users -->
+                        <!-- Dropdown button for user dropdown -->
+                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" v-on:click="showSignOut = !showSignOut"
+                            class="flex items-center justify-between py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
+                            <!-- Display user profile picture if available -->
+                            <img v-if="currentUser.photoURL" :src="currentUser.photoURL" class="w-8 h-8 rounded-full"
+                                alt="User Avatar" />
+                            <!-- Display default user icon if no profile picture -->
+                            <UserIcon v-else />
+                            <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m1 1 4 4 4-4" />
+                            </svg>
+                        </button>
+                        <!-- User dropdown menu -->
+                        <div id="dropdownNavbar" v-if="showSignOut"
+                            class="z-10 absolute font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-400">
+                                <li>
+                                    <a href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        v-on:click="signOut">
+                                        Sign Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,22 +85,24 @@
 </template>
 
 <script>
-import {onMounted} from 'vue';
-import {initFlowbite} from 'flowbite';
+import { onMounted } from 'vue';
+import { initFlowbite } from 'flowbite';
 import CartIcon from './Icons/CartIcon.vue'
 import UserIcon from './Icons/UserIcon.vue'
 import LoginModal from '@/components/modals/LoginModal.vue';
 import SignUpModal from './modals/SignUpModal.vue';
+import { authService } from '../services/authService';
 
 // Exportez le composant
 export default {
-    onMounted() {
-        initFlowbite();
-    },
     data() {
         return {
             showLogin: false,
-            showSignUp: false
+            showSignUp: false,
+            isSignedIn: false,
+            currentUser: null,
+            showSignOut: false,
+            showSignIn: false,
         }
     },
     components: {
@@ -84,13 +119,41 @@ export default {
         openLoginModal() {
             this.showLogin = true;
             this.showSignUp = false;
+            this.showSignOut = false; // Close sign-out popup if open
         },
         openSignUpModal() {
             this.showSignUp = true;
             this.showLogin = false;
+            this.showSignOut = false; // Close sign-out popup if open
+        },
+        signOut() {
+            authService.signOut()
+                .then(() => {
+                    this.isSignedIn = false;
+                    this.currentUser = null;
+                    this.showSignOut = false; // Close sign-out popup after sign-out
+                    this.showSignIn = false; // Close sign-in popup after sign-out
+                    // Handle successful sign-out (e.g., redirect, update UI)
+                })
+                .catch(error => {
+                    // Handle sign-out error
+                });
         }
+    },
+    created() {
+        authService.onAuthStateChanged(user => {
+            if (user) {
+                this.isSignedIn = true;
+                this.currentUser = user;
+            } else {
+                this.isSignedIn = false;
+                this.currentUser = null;
+            }
+        });
+    },
+    mounted() { // Change onMounted to mounted
+        initFlowbite();
     }
-
 };
 </script>
 
@@ -128,4 +191,5 @@ export default {
     /* Adjust the blur amount as needed */
     z-index: 999;
     /* Ensure it appears above other content */
-}</style>
+}
+</style>
