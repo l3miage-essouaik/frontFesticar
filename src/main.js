@@ -19,6 +19,9 @@ app.component('SignUpModalVue', SignUpModal);
 import LoginModal from '@/components/modals/LoginModal.vue';
 app.component('LoginModal', LoginModal);
 
+import MapModal from '@/components/modals/MapModal.vue';
+app.component('MapModal', MapModal);
+
 import NavbarComponent from '@/components/NavbarComponent.vue';
 app.component('NavbarComponent', NavbarComponent);
 

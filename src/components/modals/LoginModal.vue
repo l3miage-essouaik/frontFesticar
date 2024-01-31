@@ -13,7 +13,7 @@
           </div>
           <form>
             <label for='password'>E-mail</label>
-            <input class="custom-input" type='password' id='password' name='password' placeholder="Entrez votre email">
+            <input class="custom-input" type='email' id='password' name='password' placeholder="Entrez votre email">
             <label for='password'>Mot de passe</label>
             <input class="custom-input" type='password' id='password' name='password'
               placeholder="Entrez votre mot de passe">
@@ -41,6 +41,7 @@
 <script>
 import GoogleIcon from "../Icons/GoogleIcon.vue";
 import { authService } from '../../services/authService';
+import api from "@/api";
 
 export default {
   props: {
@@ -49,6 +50,18 @@ export default {
     },
   },
   name: "LoginModal",
+  data() {
+    return {
+      user: {
+        nom: '',
+        prenom: '',
+        email: '',
+        telephone: '',
+        mdp: '',
+        typeUtilisateur: 0,
+      },
+    }
+  },
   created() {
   },
   methods: {
@@ -57,6 +70,13 @@ export default {
     },
     openSignUpModal() {
       this.$emit('show-SignUpModal');
+    },
+    createUser() {
+      api.createUser(this.user).then((data) => {
+        console.log(data);
+        alert('User created successfully!');
+
+      })
     },
     /* eslint-disable no-undef */
     googleSignIn() {
@@ -67,9 +87,14 @@ export default {
           this.user.prenom = result.user.displayName.split(' ')[0];
           this.user.email = result.user.email;
           this.user.telephone = "0606060606",
-          this.user.mdp = "niestzche-vous";
+            this.user.mdp = "niestzche-vous";
           // Close sign-up modal
           this.$emit('close-LoginModal');
+          this.createUser();
+          api.getUserByEmail(this.user.email).then((data) => {
+            localStorage.setItem('userId', data.data.id);
+          })
+
         })
         .catch(error => {
           // Handle sign-in error

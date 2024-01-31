@@ -133,11 +133,11 @@ export default {
                     this.currentUser = null;
                     this.showSignOut = false; // Close sign-out popup after sign-out
                     this.showSignIn = false; // Close sign-in popup after sign-out
-                    // Handle successful sign-out (e.g., redirect, update UI)
                 })
                 .catch(error => {
                     // Handle sign-out error
                 });
+            localStorage.removeItem('userId');
         }
     },
     created() {

@@ -65,7 +65,9 @@
             </div>
 
             <div class="col-span-6 text-right">
-                <p class="prix">{{covoiturage.tarif * covoiturage.counter}} €</p>
+                <template v-for="(arretOption, index) in covoiturage.arretCovoiturageList" :key="index">
+                    <p v-if="selectedArret === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-small prix">{{ arretOption.tarif * covoiturage.counter}} €</p>
+                </template>
             </div>
             <div class="col-span-2 relative h-4  flex items-center">
                 <div class="ml-5 flex flex-col justify-center">
@@ -85,8 +87,21 @@
             <template v-for="(arret, arretIndex) in covoiturage.arretCovoiturageList" :key="arretIndex">
                 <template v-if="arret.estDepart">
                     <div class="col-span-10 h-4" style="margin-top:-10px">
-                        <p class="text-sm font-medium">{{ arret.lieuCovoiturage.nomLieu }}</p>
-                        <p class="text-sm font-small">{{ arret.lieuCovoiturage.codeInsee?.nomCommune }}, {{ convertirTypeLieu(arret.lieuCovoiturage.typeLieu) }}</p>
+                        <!-- v-on:click="showMapModal(covoiturage)" -->
+                        <select class="text-sm font-medium" v-model="selectedArret" >
+                            <option disabled value="">Choisissez un arrêt</option>
+                            <option v-for="(arretOption, index) in covoiturage.arretCovoiturageList"  :key="index" :value="arretOption.lieuCovoiturage.nomLieu">
+                            {{ arretOption.lieuCovoiturage.nomLieu }}
+                            </option>
+                        </select>
+                        <template v-for="(arretOption, index) in covoiturage.arretCovoiturageList" :key="index">
+                            <p v-if="selectedArret === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-small">{{ arretOption.lieuCovoiturage.codeInsee?.nomCommune }}, {{ convertirTypeLieu(arretOption.lieuCovoiturage.typeLieu) }}</p>
+                        </template>
+                    </div>
+                    <div v-if="covoiturage.showMap && arret" class="backdrop" style="position:absolute"> 
+                        <MapModal class="centerModal" 
+                            :lng="arret.lieuCovoiturage.codeInsee?.longitude" 
+                            :lat="arret.lieuCovoiturage.codeInsee?.latitude" :showMap="covoiturage.showMap" @close-map-modal="closeMapModal(covoiturage)" />
                     </div>
                 </template>
             </template>
@@ -118,8 +133,13 @@
                 </form>
             </div>
             <div class="col-span-6 h-4 mt-8 justify-end">
-                <div class="addToCart" v-on:click="ajouterAuPanier()">Ajouter au panier</div>
+                <template v-for="(arretOption, index) in covoiturage.arretCovoiturageList" :key="index">
+                    <div v-if="selectedArret === arretOption.lieuCovoiturage.nomLieu" class="addToCart" v-on:click="ajouterAuPanier(covoiturage, arretOption.lieuCovoiturage.idLieu)">
+                        Ajouter au panier</div>
+                </template>
             </div>
+<!--     
+            <div style="position:absolute">{{covoiturage}}</div> -->
         </div>
         <div class="flex justify-center items-center">
             <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlus()"
@@ -135,6 +155,7 @@
 <script>
 import api from '@/api';
 import { myMixins } from '@/mixins/myMixins';
+import MapModal from '@/components/modals/MapModal.vue';
 
 const fakePanier = { total: 10 }
 export default {
@@ -143,6 +164,7 @@ export default {
     data() {
         return {
             counter: 0,
+            selectedArret: '',
             typesVehicule: [],
             modele: '',
             covoiturages: [],
@@ -154,7 +176,12 @@ export default {
             test: [],
             ville: '',
             prix: '',
+            horaire: '',
+            selectedArrets: {},
         }
+    },
+    components: {
+        MapModal,
     },
     methods: {
         getCovWithCriterias() {
@@ -163,11 +190,11 @@ export default {
                     console.log(data);
                 })
         },
-        incrementCounter(covoiturage,nbPlaces,nbRes) {
-            console.log(nbPlaces-nbRes);
-            if((nbPlaces-nbRes) == covoiturage.counter){
+        incrementCounter(covoiturage, nbPlaces, nbRes) {
+            console.log(nbPlaces - nbRes);
+            if ((nbPlaces - nbRes) == covoiturage.counter) {
                 covoiturage.counter;
-            }else{
+            } else {
                 covoiturage.counter += 1;
             }
         },
@@ -185,33 +212,72 @@ export default {
             this.loading = true;
             api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.page, this.limit)
                 .then((data) => {
-                    const nouveauxCovoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false,counter: 1  }));
+                    const nouveauxCovoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false, counter: 1, showMap: false }));
                     this.covoiturages.push(...nouveauxCovoiturages);
                     this.destination = this.covoiturages[0].festival.nomFestival;
                     this.loading = false;
                 });
         },
-        ajouterAuPanier() {
-            let idAnonymousUser;
-            api.createUser({
-                nom: 'Anonymous',
-                prenom: 'Anonymous',
-                email: this.generateRandomEmail(),
-                telephone: this.generateRandomPhoneNumber(),
-                mdp: 'Anonymous',
-                typeUtilisateur: 0,
-            }).then(data => {
-                let user = {}
-                user = data.data;
-                localStorage.setItem('anonymousUserId', user.id);
-                idAnonymousUser = user.id;
-
-                api.createPanier(idAnonymousUser, fakePanier).then(panier => {
-                    localStorage.setItem('anonymousPanierId', panier.data.idPanier);
-                    console.log(panier);
+        createPanier(idAnonymousUser, userId) {
+            return new Promise((resolve, reject) => {
+                if (idAnonymousUser) {
+                    api.createPanier(idAnonymousUser, {}).then(panier => {
+                        localStorage.setItem('anonymousPanierId', panier.data.idPanier);
+                        resolve(panier.data.idPanier);
+                    }).catch(reject);
+                }
+                if (userId) {
+                    api.createPanier(userId, {}).then(panier => {
+                        resolve(panier.data.idPanier);
+                    }).catch(reject);
+                }
+            });
+        },
+        async ajouterAuPanier(covoiturage, idLieu) {
+            const userId = localStorage.getItem("userId");
+            const horaire = await this.getArretHoraire(covoiturage.idCovoiturage, idLieu);
+            if (userId) {
+                const panierId = await this.createPanier(null, userId);
+                const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
+                api.createPack(pack).then((pack) => {
+                    console.log(pack);
                 })
-            })
-        }
+            } else {
+                let idAnonymousUser;
+                api.createUser({
+                    nom: 'Anonymous',
+                    prenom: 'Anonymous',
+                    email: this.generateRandomEmail(),
+                    telephone: this.generateRandomPhoneNumber(),
+                    mdp: 'Anonymous',
+                    typeUtilisateur: 0,
+                }).then(data => {
+                    let user = {}
+                    user = data.data;
+                    localStorage.setItem('anonymousUserId', user.id);
+                    idAnonymousUser = user.id;
+                    this.createPanier(idAnonymousUser, null, fakePanier);
+                })
+            }
+        },
+        closeMapModal(covoiturage) {
+            covoiturage.showMap = false;
+            console.log(covoiturage.showMap);
+        },
+        showMapModal(covoiturage) {
+            covoiturage.showMap = true;
+            console.log(covoiturage.showMap);
+
+        },
+        async getArretHoraire(idCov, idLieu) {
+            try {
+                const response = await api.getHoraireArret(idCov, idLieu);
+                return response.data.horaire;
+            } catch (error) {
+                console.error("Erreur lors de la récupération de l'horaire de l'arrêt :", error);
+                throw error;
+            }
+        },
     },
     computed: {
         tousCovoituragesChargees() {
@@ -220,6 +286,7 @@ export default {
     },
     mounted() {
         this.fetchCovoiturages();
+        this.getArretHoraire(88183, "49069-C-003");
         api.getModelVoiture().then((data) => {
             this.typesVehicule = data.data;
         });

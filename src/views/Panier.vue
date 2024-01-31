@@ -142,7 +142,7 @@ p {
     width: 70%;
     height: 300px;
     flex-shrink: 0;
-    margin: 0 auto;
+    margin: 0;
     box-sizing: border-box;
     position: relative !important;
     top: 0;

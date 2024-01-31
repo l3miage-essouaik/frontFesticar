@@ -61,6 +61,18 @@ class Api {
     getModelVoiture(){
         return this.axios.get('/api/Covoiturage/ModeleVoiture');
     }
+
+    getUserByEmail(email){
+        return this.axios.get('/api/utilisateur/?email='+email);
+    }
+
+    createPack(pack){
+        return this.axios.post(`/api/pack/`,pack);
+    }
+
+    getHoraireArret(idCov,idLieu){
+        return this.axios.get(`/api/ArretCovoiturage?id=${idCov}&idLieu=${idLieu}`);
+    }
 }
 
 export default new Api(process.env.VUE_APP_BACKEND_URL);
