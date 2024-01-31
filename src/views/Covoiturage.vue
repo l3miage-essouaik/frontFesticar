@@ -221,14 +221,15 @@ export default {
         createPanier(idAnonymousUser, userId) {
             return new Promise((resolve, reject) => {
                 if (idAnonymousUser) {
-                    api.createPanier(idAnonymousUser, {}).then(panier => {
+                    api.createPanier(idAnonymousUser, { dateCreation: new Date() }).then(panier => {
                         localStorage.setItem('anonymousPanierId', panier.data.idPanier);
                         resolve(panier.data.idPanier);
                     }).catch(reject);
                 }
                 if (userId) {
-                    api.createPanier(userId, {}).then(panier => {
+                    api.createPanier(userId, { dateCreation: new Date() }).then(panier => {
                         resolve(panier.data.idPanier);
+
                     }).catch(reject);
                 }
             });
@@ -237,13 +238,21 @@ export default {
             const userId = localStorage.getItem("userId");
             const horaire = await this.getArretHoraire(covoiturage.idCovoiturage, idLieu);
             if (userId) {
-                const panierId = await this.createPanier(null, userId);
+                let panierId;
+                if (!localStorage.getItem('anonymousPanierId')) {
+                    panierId = await this.createPanier(null, userId);
+                } else {
+                    panierId = localStorage.getItem('anonymousPanierId');
+                }
                 const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
-                api.createPack(pack).then((pack) => {
-                    console.log(pack);
-                })
+                api.createPack(pack).then((pack) => { })
             } else {
                 let idAnonymousUser;
+                if(localStorage.getItem('anonymousUserId')) {
+                    idAnonymousUser = localStorage.getItem('anonymousUserId');
+                } else {
+                    idAnonymousUser = null;
+                }
                 api.createUser({
                     nom: 'Anonymous',
                     prenom: 'Anonymous',
@@ -251,12 +260,19 @@ export default {
                     telephone: this.generateRandomPhoneNumber(),
                     mdp: 'Anonymous',
                     typeUtilisateur: 0,
-                }).then(data => {
+                }).then(async (data) => {
                     let user = {}
                     user = data.data;
                     localStorage.setItem('anonymousUserId', user.id);
                     idAnonymousUser = user.id;
-                    this.createPanier(idAnonymousUser, null, fakePanier);
+                    let panierId;
+                    if (!localStorage.getItem('anonymousPanierId')) {
+                        panierId = await this.createPanier(idAnonymousUser, null);
+                    } else {
+                        panierId = localStorage.getItem('anonymousPanierId');
+                    }
+                    const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
+                    api.createPack(pack).then((pack) => { })
                 })
             }
         },

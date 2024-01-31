@@ -42,8 +42,10 @@
 import GoogleIcon from "../Icons/GoogleIcon.vue";
 import { authService } from '../../services/authService';
 import api from "@/api";
+import { myMixins } from '@/mixins/myMixins';
 
 export default {
+  mixins: [myMixins],
   props: {
     showLogin: {
       type: Boolean,
@@ -81,27 +83,37 @@ export default {
     /* eslint-disable no-undef */
     googleSignIn() {
       authService.signInWithGoogle()
-        .then(result => {
+        .then(async (result) => {
           // Extract user information from Google authentication result
           this.user.nom = result.user.displayName.split(' ')[1];
           this.user.prenom = result.user.displayName.split(' ')[0];
           this.user.email = result.user.email;
-          this.user.telephone = "0606060606",
+          this.user.telephone = this.generateRandomPhoneNumber(),
             this.user.mdp = "niestzche-vous";
           // Close sign-up modal
           this.$emit('close-LoginModal');
           this.createUser();
-          api.getUserByEmail(this.user.email).then((data) => {
-            localStorage.setItem('userId', data.data.id);
-          })
-
+          // wait for the user to be created before getting the user id
+          setTimeout(async () => {
+            try {
+              const userData = await api.getUserByEmail(this.user.email);
+              localStorage.setItem('userId', userData.data.id);
+              this.affectPanierToUser();
+              if (localStorage.getItem('anonymousPanierId') != null) {
+                localStorage.removeItem('anonymousPanierId');
+              }
+            } catch (error) {
+              // Handle error
+            }
+          }, 1000);
         })
-        .catch(error => {
-          // Handle sign-in error
-        });
-    }
+    },
     /* eslint-enable no-undef */
-
+    affectPanierToUser() {
+      api.affectPanierToUser(localStorage.getItem('userId'), localStorage.getItem('anonymousPanierId')).then((data) => {
+        console.log(data);
+      })
+    }
   },
 };
 </script>

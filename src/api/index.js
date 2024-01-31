@@ -73,6 +73,14 @@ class Api {
     getHoraireArret(idCov,idLieu){
         return this.axios.get(`/api/ArretCovoiturage?id=${idCov}&idLieu=${idLieu}`);
     }
+
+    affectPanierToUser(idUser,idPanier){
+        return this.axios.patch(`/api/utilisateur/${idPanier}/${idUser}`);
+    }
+
+    getPanierByUser(idUser){
+        return this.axios.get(`/api/panier/?utilisateurId=`+idUser);
+    }
 }
 
 export default new Api(process.env.VUE_APP_BACKEND_URL);

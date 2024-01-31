@@ -50,13 +50,14 @@
                     <p class="text-sm font-small">Clisson Loire Atlantique</p>
                 </div>
                 <div class="col-span-9 h-4  mt-8 flex justify-between items-center">
-                    <p class="text-sm font-medium" v-if="counter>1">Nombre de passagers</p>
+                    <p class="text-sm font-medium" v-if="counter > 1">Nombre de passagers</p>
                     <p class="text-sm font-medium" v-else>Nombre de passager</p>
 
                     <div class="max-w-xs relative flex items-center">
                         <form class="max-w-xs ml-4">
                             <div class="relative flex items-center">
-                                <button v-on:click="decrementCounter()" type="button" id="decrement-button" data-input-counter-decrement="counter-input"
+                                <button v-on:click="decrementCounter()" type="button" id="decrement-button"
+                                    data-input-counter-decrement="counter-input"
                                     class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                                     <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -67,7 +68,8 @@
                                 <input type="text" id="counter-input" data-input-counter
                                     class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
                                     placeholder="" value="12" v-model="counter" required>
-                                <button v-on:click="incrementCounter()" type="button" id="increment-button" data-input-counter-increment="counter-input"
+                                <button v-on:click="incrementCounter()" type="button" id="increment-button"
+                                    data-input-counter-increment="counter-input"
                                     class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                                     <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
@@ -86,28 +88,39 @@
                 </div>
 
             </div>
+            {{ paniers }}
         </div>
     </div>
 </template>
   
 <script>
 import CartIcon from '../components/Icons/CartIcon.vue'
+import api from '@/api';
 
 export default {
     name: 'PanierView',
     data() {
         return {
-            counter : 0
+            counter: 0,
+            paniers: []
         }
     },
     methods: {
-        incrementCounter(){
+        incrementCounter() {
             this.counter += 1;
         },
-        decrementCounter(){
-            if(this.counter!=0)
-            this.counter -=1;
+        decrementCounter() {
+            if (this.counter != 0)
+                this.counter -= 1;
+        },
+    },
+    mounted() {
+        if (localStorage.getItem('userId')) {
+            api.get('/api/panier/?' + localStorage.getItem('userId')).then((response) => {
+                this.paniers.push(response.data);
+            });
         }
+
     }
 };
 </script>
@@ -237,5 +250,6 @@ p {
     .title {
         font-size: 23px !important;
     }
-}</style>
+}
+</style>
   
