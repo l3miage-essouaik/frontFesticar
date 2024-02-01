@@ -14,7 +14,7 @@
                     <div v-if="!isSignedIn">
                         <!-- Normal dropdown for non-authenticated users -->
                         <!-- Dropdown button for normal dropdown -->
-                        <button id="dropdownNavbarLink"  v-on:click="showSignIn = !showSignIn"
+                        <button id="dropdownNavbarLink" v-on:click="showSignIn = !showSignIn"
                             class="flex items-center justify-between py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
                             <UserIcon />
                             <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -43,12 +43,12 @@
                     <div v-else>
                         <!-- User dropdown for authenticated users -->
                         <!-- Dropdown button for user dropdown -->
-                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" v-on:click="showSignOut = !showSignOut"
+                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
+                            v-on:click="showSignOut = !showSignOut"
                             class="flex items-center justify-between py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
                             <!-- Display user profile picture if available -->
-                            <img v-if="currentUser.photoURL" :src="currentUser.photoURL" class="w-8 h-8 rounded-full"
-                                alt="User Avatar" />
-                            <!-- Display default user icon if no profile picture -->
+                            <img v-if="isSignedIn" :src="userPicture" class="w-8 h-8 rounded-full" alt="User Avatar" />
+                            <!-- Display default user icon if no profile picture available -->
                             <UserIcon v-else />
                             <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 10 6">
@@ -93,8 +93,10 @@ import LoginModal from '@/components/modals/LoginModal.vue';
 import SignUpModal from './modals/SignUpModal.vue';
 import { authService } from '../services/authService';
 
+
 // Exportez le composant
 export default {
+    inject: ['emitter'],
     data() {
         return {
             showLogin: false,
@@ -103,6 +105,7 @@ export default {
             currentUser: null,
             showSignOut: false,
             showSignIn: false,
+            userPicture: require('@/assets/hellfest.png'), // Default user picture
         }
     },
     components: {
@@ -112,6 +115,9 @@ export default {
     methods: {
         closeLoginModal() {
             this.showLogin = false;
+        },
+        updateIsSignedIn(value) {
+            this.isSignedIn = value;
         },
         closeSignupModal() {
             this.showSignUp = false;
@@ -145,11 +151,14 @@ export default {
             if (user) {
                 this.isSignedIn = true;
                 this.currentUser = user;
+                this.userPicture = user.photoURL || require('@/assets/hellfest.png'); // Set user picture URL
             } else {
                 this.isSignedIn = false;
                 this.currentUser = null;
+                this.userPicture = require('@/assets/hellfest.png'); // Reset to default user picture
             }
         });
+        this.emitter.on('updateIsSignedIn', this.updateIsSignedIn);
     },
     mounted() { // Change onMounted to mounted
         initFlowbite();

@@ -19,7 +19,7 @@
               placeholder="Entrez votre mot de passe">
           </form>
           <div class="buttons">
-            <button class="button" v-on:click="logUserbyEmailandMdp">Connexion</button>
+            <button class="button" v-on:click="logUserbyEmailandMdp()">Connexion</button>
             <button class="facebook-button">
               <span @click="googleSignIn()" style="display: flex; align-items: center;">Continuer avec
                 <GoogleIcon style=" margin-left: 3px;" />
@@ -46,6 +46,7 @@ import { myMixins } from '@/mixins/myMixins';
 
 export default {
   mixins: [myMixins],
+  inject: ['emitter'],
   props: {
     showLogin: {
       type: Boolean,
@@ -81,6 +82,9 @@ export default {
         if (data.data != null) {
           localStorage.setItem('userId', data.data.id);
           this.$emit('close-LoginModal');
+          this.emitter.emit('updateIsSignedIn', true); // Emit event to update isSignedIn in NavbarComponent
+          //log to make sure the emitter emitted the event
+          console.log('emitted');
         } else {
           alert('Email ou mot de passe incorrect');
         }

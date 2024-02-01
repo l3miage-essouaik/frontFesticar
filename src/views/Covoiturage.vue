@@ -74,7 +74,7 @@
                     <div class="ml-5 flex flex-col justify-center">
                         <div class="hour">
                         <template v-for="(arretOption, index3) in covoiturage.arretCovoiturageList" :key="index3">
-                            <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu"  class="text-sm font-medium">{{arretOption.arretCovoiturageId.horaire}}</p>
+                            <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu"  class="text-sm font-medium">{{arretOption.arretCovoiturageId?.horaire}}</p>
                         </template>
                             <p class="text-sm font-small">6h30</p>
                         </div>
@@ -136,8 +136,8 @@
                     </form>
                 </div>
                 <div class="col-span-6 h-4 mt-8 justify-end">
-                    <template v-for="(arretOption, index) in covoiturage.arretCovoiturageList" :key="index">
-                        <div v-if="selectedArret === arretOption.lieuCovoiturage.nomLieu" class="addToCart" v-on:click="ajouterAuPanier(covoiturage, arretOption.lieuCovoiturage.idLieu)">
+                    <template v-for="(arretOption, index8) in covoiturage.arretCovoiturageList" :key="index8">
+                        <div v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="addToCart" v-on:click="ajouterAuPanier(covoiturage, arretOption.lieuCovoiturage.idLieu)">
                             Ajouter au panier</div>
                     </template>
                 </div>
