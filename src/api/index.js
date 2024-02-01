@@ -15,7 +15,7 @@ class Api {
         return this.axios.get('/api/Festival/'+id)
     }
 
-    getFestivalsWithcriterias(nomFestival,dateDebut,dateFin,tarif,sousDomaine){
+    getFestivalsWithcriterias(nomFestival,dateDebut,dateFin,tarif,sousDomaine,numPage=0){
         let url = '/api/festivals/?';
 
         if (nomFestival) url += `nomFestival=${nomFestival}&`;
@@ -25,7 +25,7 @@ class Api {
         if (sousDomaine) url += `sousDomaine=${sousDomaine}&`;
 
         // Supprimez le dernier '&' de l'URL
-        url += "numPage=0&taille=10&"
+        url += "numPage="+numPage+"&taille=10&";
         url = url.slice(0, -1);
 
         return this.axios.get(url);

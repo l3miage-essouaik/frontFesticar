@@ -9,7 +9,7 @@
                 </div>
                 <div class="check-in">
                     <p>Date</p>
-                    <input type="date" class="inputDate"  v-model="dateDebut" placeholder="Quand ?"> 
+                    <input type="date" class="inputDate" v-model="dateDebut" placeholder="Quand ?">
                 </div>
                 <div class="check-out">
                     <p>Ville</p>
@@ -64,12 +64,11 @@
                 <h3 class="z-10 mt-3 text-3xl font-bold text-white">{{ festival.nomFestival }}</h3>
                 <div class="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{{
                     getFormattedDate(festival.dateDebut) }} - {{ getFormattedDate(festival.dateFin) }}, {{
-                    !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
+        !festival.commune ? 'Marrakech' : festival.commune.nomCommune }}</div>
             </router-link>
         </div>
         <div class="flex justify-center items-center">
-            <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlusFestival()"
-                v-if="!loading"
+            <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlusFestival()" v-if="!loading"
                 :class="{ 'disabledButton': limit >= festivalsFiltered.length && festivalsFiltered.length > 0 }">
                 Voir plus
             </button>
@@ -80,7 +79,7 @@
 <script>
 import '@vuepic/vue-datepicker/dist/main.css';
 import api from '@/api'
-import { myMixins } from '@/mixins/myMixins'; 
+import { myMixins } from '@/mixins/myMixins';
 
 export default {
     name: 'HomeView',
@@ -103,8 +102,9 @@ export default {
             festivalsFiltered: [],
             logoDomaines: [],
             limit: 8,
-            numPage : 0,
+            numPage: 0,
             loading: true,
+            withCreteria: false,
         }
     },
     methods: {
@@ -118,8 +118,12 @@ export default {
         voirPlusFestival() {
             this.limit += 8;
             this.numPage += 1;
+            if (this.festivalsFiltered.length>0) {
+                api.getFestivalsWithcriterias(this.nomFestival, this.dateDebut, null, this.prix, this.domaine.nomDomaine, this.numPage).then((data) => {
+                    this.festivalsFiltered = [...this.festivalsFiltered, ...data.data];
+                })
+            }
             api.getFestivals(this.numPage).then((festivals) => {
-                console.log(festivals);
                 festivals.data.map((festival) => {
                     this.festivals.push(festival);
                 });
@@ -188,7 +192,7 @@ body {
     animation: moveLeftRight 2s infinite alternate;
 }
 
-.loader{
+.loader {
     position: absolute;
     top: 55%;
     left: 50%;
@@ -199,15 +203,26 @@ body {
 
 /* Animation pour faire bouger l'image de bas en haut */
 @keyframes moveUpDown {
-    0% { transform: translateY(10px); }
-    100% { transform: translateY(-10px); }
+    0% {
+        transform: translateY(10px);
+    }
+
+    100% {
+        transform: translateY(-10px);
+    }
 }
 
 /* Animation pour faire bouger l'image de gauche à droite */
 @keyframes moveLeftRight {
-    0% { transform: translateX(-120px); }
-    100% { transform: translateX(10px); }
+    0% {
+        transform: translateX(-120px);
+    }
+
+    100% {
+        transform: translateX(10px);
+    }
 }
+
 .bar {
     max-width: 100%;
     height: 69px !important;
@@ -330,10 +345,11 @@ input[type="text"]:focus {
     position: relative;
 }
 
-.domain:hover select{
+.domain:hover select {
     background-color: #f0f0f0 !important;
-    transition: background-color 0.1s ease-in-out; 
+    transition: background-color 0.1s ease-in-out;
 }
+
 .bar>div::before {
     position: absolute;
     content: "";
@@ -368,7 +384,7 @@ select {
     margin-top: 4px;
 }
 
-.inputDate{
+.inputDate {
     color: #666666;
     font-size: 12px;
     margin-top: -5px;

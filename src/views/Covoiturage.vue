@@ -72,7 +72,9 @@
             <div class="col-span-2 relative h-4  flex items-center">
                 <div class="ml-5 flex flex-col justify-center">
                     <div class="hour">
-                        <p class="text-sm font-medium">16:30</p>
+                    <template v-for="(arretOption, index) in covoiturage.arretCovoiturageList" :key="index">
+                        <p v-if="selectedArret === arretOption.lieuCovoiturage.nomLieu"  class="text-sm font-medium">{{arretOption.arretCovoiturageId.horaire}}</p>
+                    </template>
                         <p class="text-sm font-small">6h30</p>
                     </div>
                 </div>
@@ -138,8 +140,8 @@
                         Ajouter au panier</div>
                 </template>
             </div>
-<!--     
-            <div style="position:absolute">{{covoiturage}}</div> -->
+  
+            <!-- <div style="position:absolute">{{covoiturage}}</div>  -->
         </div>
         <div class="flex justify-center items-center">
             <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlus()"
@@ -148,6 +150,7 @@
                 Voir plus
             </button>
         </div>
+  
     </div>
 </div>
 </template>
@@ -212,6 +215,7 @@ export default {
             this.loading = true;
             api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.page, this.limit)
                 .then((data) => {
+                    console.log(data.data);
                     const nouveauxCovoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false, counter: 1, showMap: false }));
                     this.covoiturages.push(...nouveauxCovoiturages);
                     this.destination = this.covoiturages[0].festival.nomFestival;
@@ -248,7 +252,7 @@ export default {
                 api.createPack(pack).then((pack) => { })
             } else {
                 let idAnonymousUser;
-                if(localStorage.getItem('anonymousUserId')) {
+                if (localStorage.getItem('anonymousUserId')) {
                     idAnonymousUser = localStorage.getItem('anonymousUserId');
                 } else {
                     idAnonymousUser = null;
