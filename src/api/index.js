@@ -75,8 +75,13 @@ class Api {
         return this.axios.get(`/api/ArretCovoiturage?id=${idCov}&idLieu=${idLieu}`);
     }
 
-    affectPanierToUser(idUser,idPanier){
-        return this.axios.post(`/api/panier/${idPanier}/${idUser}`);
+    affectPanierToUser(idUser, idPanier) {
+        const headers = {
+            'Content-Type': 'application/json', // Assuming JSON data is being sent
+            'Access-Control-Allow-Origin': '*' // Change * to the appropriate origin if known
+        };
+    
+        return this.axios.post(`/api/pack/user/${idPanier}/${idUser}`, {}, { headers });
     }
 
     getPanierByUser(idUser){
