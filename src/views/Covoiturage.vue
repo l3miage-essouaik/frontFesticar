@@ -5,7 +5,20 @@
         <h2 class="text-4xl font-extrabold dark:text-white title">
             Destination {{destination}}
         </h2>
+    </div>   
+    <div class="fixed top-0 left-0 w-full bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md z-50" v-if="showAlert" role="alert">
+    <div class="flex items-center justify-center">
+        <div class="mr-4">
+            <svg class="fill-current h-6 w-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/>
+            </svg>
+        </div>
+        <div>
+            <p class="font-bold">Votre covoiturage a été ajouté avec succès</p>
+        </div>
     </div>
+</div>
+
     <!-- a horizontal 1pt line to separate the title from the content -->
     <hr class="mt-5 mb-5" style="border: -0.5px solid #054652; width: 100%;">
     <div class="z-10">
@@ -54,7 +67,7 @@
                     <p class="text-xs text-gray-500 ml-2">Conducteur</p>
                 </div>
                 <div class="ml-5" @mouseover="covoiturage.showInfo = true" @mouseleave="covoiturage.showInfo = false">
-                    <div class="information"> ℹ</div>
+                    <InfoIcon class="mr-10"/>
                     <div class="tooltip" v-if="covoiturage.showInfo">
                         <p>Type de voiture: {{covoiturage.modelVoiture}}</p>
                         <p>Modèle: {{covoiturage.marque}} </p>
@@ -62,6 +75,7 @@
                         <p>Nombre de passagers: {{ covoiturage.nbPlacesReservées }}</p>
                     </div>
                 </div>
+                <PinIcon v-on:click="showMapModal(covoiturage)"/>
             </div>
 
             <div class="col-span-6 text-right">
@@ -100,17 +114,20 @@
                             <p v-if="selectedArret === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-small">{{ arretOption.lieuCovoiturage.codeInsee?.nomCommune }}, {{ convertirTypeLieu(arretOption.lieuCovoiturage.typeLieu) }}</p>
                         </template>
                     </div>
-                    <div v-if="covoiturage.showMap && arret" class="backdrop" style="position:absolute"> 
-                        <MapModal class="centerModal" 
-                            :lng="arret.lieuCovoiturage.codeInsee?.longitude" 
-                            :lat="arret.lieuCovoiturage.codeInsee?.latitude" :showMap="covoiturage.showMap" @close-map-modal="closeMapModal(covoiturage)" />
-                    </div>
+                    <template v-for="(arretOption, index) in covoiturage.arretCovoiturageList" :key="index">
+                        <div v-if="covoiturage.showMap && arret && selectedArret === arretOption.lieuCovoiturage.nomLieu" class="backdrop" style="position:absolute"> 
+                            <MapModal class="centerModal" 
+                            :lng="arretOption.lieuCovoiturage.codeInsee?.longitude" 
+                            :lat="arretOption.lieuCovoiturage.codeInsee?.latitude" :showMap="covoiturage.showMap" @close-map-modal="closeMapModal(covoiturage)" />
+                        </div>
+                        </template>
+                    
                 </template>
             </template>
    
             <div class="col-span-2 relative h-4  items-center">
                 <div class="ml-5 mt-8 hourDown">
-                    <p class="text-sm font-medium"  v-on:click="showMapModal(covoiturage)">20:00</p>
+                    <p class="text-sm font-medium">20:00</p>
                 </div>
             </div>
             <div class="col-span-10 h-4  mt-8">
@@ -124,12 +141,12 @@
                 <form class="max-w-xs ml-4">
                     <div class="relative flex items-center">
                         <div v-on:click="decrementCounter(covoiturage)" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
-                            -
+                            <MinusIcon/>
                         </div>
                         <input type="text" id="counter-input" data-input-counter 
                         class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" value="12" v-model="covoiturage.counter" required>
                         <div v-on:click="incrementCounter(covoiturage,covoiturage.nbPlaces,covoiturage.nbPlacesReservées)" type="button" id="increment-button" data-input-counter-increment="counter-input">
-                            +
+                            <PlusIcon/>
                         </div>
                     </div>
                 </form>
@@ -150,7 +167,6 @@
                 Voir plus
             </button>
         </div>
-  
     </div>
 </div>
 </template>
@@ -181,6 +197,7 @@ export default {
             prix: '',
             horaire: '',
             selectedArrets: {},
+            showAlert: false,
         }
     },
     components: {
@@ -228,7 +245,7 @@ export default {
                     }).catch(reject);
                 }
                 if (userId) {
-                    api.createPanier(userId, { dateCreation: new Date(),etat: 2 }).then(panier => {
+                    api.createPanier(userId, { dateCreation: new Date(), etat: 2 }).then(panier => {
                         resolve(panier.data.idPanier);
 
                     }).catch(reject);
@@ -241,22 +258,22 @@ export default {
             if (userId) {
                 let panierId;
                 if (!localStorage.getItem('anonymousPanierId')) {
-                    api.getPanierByUser(userId).then(async (data)=>{
+                    api.getPanierByUser(userId).then(async (data) => {
                         let paniers = data.data;
                         let panierEnAttente = paniers.find(panier => panier.etat === "EN_ATTENTE");
-                        if(!panierEnAttente) {
+                        if (!panierEnAttente) {
                             panierId = await this.createPanier(null, userId);
-                        }else{
+                        } else {
                             panierId = panierEnAttente.idPanier;
                         }
                     })
                 } else {
                     panierId = localStorage.getItem('anonymousPanierId');
                 }
-                setTimeout(()=>{
+                setTimeout(() => {
                     const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
                     api.createPack(pack).then((pack) => { })
-                },300)
+                }, 1000)
             } else {
                 let idAnonymousUser;
                 if (localStorage.getItem('anonymousUserId')) {
@@ -286,7 +303,10 @@ export default {
                     api.createPack(pack).then((pack) => { })
                 })
             }
-
+            this.showAlert = true;
+            setTimeout(() => {
+                this.showAlert = false;
+            }, 3000);
         },
         closeMapModal(covoiturage) {
             covoiturage.showMap = false;
@@ -576,22 +596,20 @@ select:focus {
 }
 
 #increment-button {
-    border-radius: 100%;
     background-color: transparent;
     color: #054652 !important;
-    border: 2px solid #054652 !important;
     outline: none;
     padding: 0px 5px;
+    font-weight: 900;
 
 }
 
 #decrement-button {
-    border-radius: 100%;
     background-color: transparent;
     color: #054652 !important;
-    border: 2px solid #054652 !important;
     outline: none;
-    padding: 0px 5px;
+    font-weight: 900;
+
 }
 
 .border {

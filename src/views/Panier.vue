@@ -3,8 +3,23 @@
         <div class="flex flex-col items-center">
             <h2 class="text-4xl font-extrabold dark:text-white title">
                 <CartIcon class="icon inline-block" :size="50" color="#054652" />
-                Mon Panier {{ this.total }} €
+                Mon Panier <span v-if="packs?.length > 0"> {{ this.total }} € </span>
             </h2>
+        </div>
+        <div class="fixed top-0 left-0 w-full bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md z-50" v-if="showAlert" role="alert">
+    <div class="flex items-center justify-center">
+        <div class="mr-4">
+            <svg class="fill-current h-6 w-6 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/>
+            </svg>
+        </div>
+        <div>
+            <p class="font-bold">Votre pack a été supprimé</p>
+        </div>
+    </div>
+</div>
+        <div v-if="packs?.length == 0" class="flex justify-center items-center h-screen">
+            <h1 style="font-size: 30px;font-weight: 600;" class="text-center">Votre panier est vide</h1>
         </div>
         <div class="relative">
             <div v-for="(pack, index) in packs" :key="index" class="grid grid-cols-12 gap-8 panier"
@@ -42,7 +57,8 @@
                 <div class="col-span-10 h-4" style="margin-top:-10px">
                     <p class="text-sm font-medium">{{ pack.idPack.arretCovoiturage.lieuCovoiturage.nomLieu }}, {{
                         convertirTypeLieu(pack.idPack.arretCovoiturage.lieuCovoiturage.typeLieu) }}</p>
-                    <p class="text-sm font-small">{{ pack.idPack.arretCovoiturage.lieuCovoiturage.codeInsee.nomCommune }}
+                    <p class="text-sm font-small">{{ pack.idPack.arretCovoiturage.lieuCovoiturage.codeInsee?.nomCommune ?
+                        pack.idPack.arretCovoiturage.lieuCovoiturage.codeInsee?.nomCommune : 'Neverland' }}
                     </p>
                 </div>
                 <div class="col-span-2 relative h-4  items-center">
@@ -71,26 +87,14 @@
                     <div class="max-w-xs relative flex items-center">
                         <form class="max-w-xs ml-4">
                             <div class="relative flex items-center">
-                                <button v-on:click="decrementCounter(pack)" type="button" id="decrement-button"
-                                    data-input-counter-decrement="counter-input"
-                                    class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
-                                    <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                        <path stroke="#054652" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="M1 1h16" />
-                                    </svg>
+                                <button v-on:click="decrementCounter(pack)" type="button">                    
+                                   <MinusIcon/>
                                 </button>
                                 <input type="text" id="counter-input" data-input-counter
                                     class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
                                     placeholder="" value="12" v-model="pack.nbPlacesReserves" required>
-                                <button v-on:click="incrementCounter(pack)" type="button" id="increment-button"
-                                    data-input-counter-increment="counter-input"
-                                    class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
-                                    <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="#054652" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="M9 1v16M1 9h16" />
-                                    </svg>
+                                <button v-on:click="incrementCounter(pack)" type="button">
+                                    <PlusIcon/>
                                 </button>
                             </div>
                         </form>
@@ -98,14 +102,15 @@
                 </div>
                 <div class="col-span-3 h-4  mt-8 flex justify-end">
                     <p class="text-sm font-medium" style="margin-top: -7px;">
-                        <TrashIcon :size="30" color="#054652" />
+                        <TrashIcon style="cursor: pointer;" :size="30" color="#054652"
+                            v-on:click="deletePack(pack.idPack.arretCovoiturage.arretCovoiturageId.horaire, pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.idCovoiturage, pack.idPack.panier.idPanier)" />
                     </p>
                 </div>
             </div>
-            <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4 mx-auto block" v-on:click="() => voirPlus()">
+            <button v-if="packs?.length > 0" class="voirPlus w-10/12 md:w-2/4 lg:w-1/4 mx-auto block"
+                v-on:click="etesVousSur(packs[0].idPack.panier?.idPanier)">
                 Valider l'achat
             </button>
-            {{ packs }}
         </div>
     </div>
 </template>
@@ -126,10 +131,42 @@ export default {
             lieuPacks: [],
             packs: [],
             covoiturage: {},
-            total: 0
+            total: 0,
+            showAlert: false,
         }
     },
     methods: {
+        deletePack(horaire, idCov, panierId) {
+            if (window.confirm("Êtes-vous sûr de vouloir supprimer ce pack ?")) {
+                api.deletePack(horaire, idCov, panierId).then(() => {
+                    this.showAlert = true;
+                    console.log(this.showAlert);
+
+                    setTimeout(() => {
+                        window.location.reload();                    
+                    }, 580);
+                }).catch(error => {
+                    // Gérer les erreurs éventuelles lors de la suppression
+                });
+            }
+        },
+        etesVousSur(idPanier) {
+            if (confirm("Êtes-vous sûr ?")) {
+               // 
+                this.packs.map(pack=>{
+                    console.log(pack.idPack);
+                    let updatedPack = { panier: pack.idPack.panier.idPanier,horaire: pack.idPack.arretCovoiturage.arretCovoiturageId.horaire,idCovoiturage: pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.idCovoiturage, nbPlacesReserves: pack.nbPlacesReserves  }
+                    api.updateNbPlaces(updatedPack).then(data=>{
+                        console.log(data);
+                    })
+                })
+               api.updateEtatPanier(idPanier, 1).then(() => {
+                    confirm("Votre paiement a été effectué avec succès")
+                    this.packs = [];
+                })
+
+            }
+        },
         incrementCounter(pack) {
             if (pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.nbPlaces - pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.nbPlacesReservées - pack.nbPlacesReserves !== 0) {
                 pack.nbPlacesReserves += 1;
@@ -159,14 +196,16 @@ export default {
                 this.panier = paniersEnAttente;
             });
             setTimeout(async () => {
-                this.packs = (await api.getPackByIdPanier(this.panier[0].idPanier)).data;
-                if (this.packs && this.packs.length > 0) {
-                    this.total = this.packs.reduce((acc, pack) => {
-                        let packTotal = pack.idPack.arretCovoiturage.tarif * pack.nbPlacesReserves;
-                        return acc + packTotal;
-                    }, 0);
+                if ((Object.keys(this.panier)?.length) !== 0) {
+                    this.packs = (await api.getPackByIdPanier(this.panier[0]?.idPanier)).data;
+                    if (this.packs && this.packs?.length > 0) {
+                        this.total = this.packs.reduce((acc, pack) => {
+                            let packTotal = pack.idPack.arretCovoiturage.tarif * pack.nbPlacesReserves;
+                            return acc + packTotal;
+                        }, 0);
+                    }
                 }
-            }, 200)
+            }, 200);
 
         }
 
@@ -324,6 +363,5 @@ p {
     .title {
         font-size: 23px !important;
     }
-}
-</style>
+}</style>
   

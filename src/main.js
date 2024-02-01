@@ -13,6 +13,7 @@ app.use(router).use(Vuetify);
 app.component('VueDatePicker', VueDatePicker);
 
 
+
 import SignUpModal from '@/components/modals/SignUpModal.vue';
 app.component('SignUpModalVue', SignUpModal);
 
@@ -28,6 +29,18 @@ app.component('NavbarComponent', NavbarComponent);
 //icons
 import TrashIcon from '@/components/Icons/TrashIcon.vue';
 app.component('TrashIcon', TrashIcon); 
+
+import PlusIcon from '@/components/Icons/PlusIcon.vue';
+app.component('PlusIcon', PlusIcon); 
+
+import PinIcon from '@/components/Icons/PinIcon.vue';
+app.component('PinIcon', PinIcon); 
+
+import MinusIcon from '@/components/Icons/MinusIcon.vue';
+app.component('MinusIcon', MinusIcon); 
+
+import InfoIcon from '@/components/Icons/InfoIcon.vue';
+app.component('InfoIcon', InfoIcon);
 
 import GoogleIcon from '@/components/Icons/GoogleIcon.vue';
 app.component('GoogleIcon', GoogleIcon); 
