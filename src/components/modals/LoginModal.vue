@@ -89,14 +89,16 @@ export default {
           this.user.prenom = result.user.displayName.split(' ')[0];
           this.user.email = result.user.email;
           this.user.telephone = this.generateRandomPhoneNumber(),
-          this.user.mdp = "niestzche-vous";
+            this.user.mdp = "niestzche-vous";
           // Close sign-up modal
           this.$emit('close-LoginModal');
-          this.createUser();
           // wait for the user to be created before getting the user id
           setTimeout(async () => {
             try {
               const userData = await api.getUserByEmail(this.user.email);
+              if (!userData) {
+                this.createUser();
+              }
               localStorage.setItem('userId', userData.data.id);
               if (localStorage.getItem('anonymousPanierId') != null) {
                 this.affectPanierToUser();

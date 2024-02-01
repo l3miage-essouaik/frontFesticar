@@ -103,6 +103,7 @@ export default {
             festivalsFiltered: [],
             logoDomaines: [],
             limit: 8,
+            numPage : 0,
             loading: true,
         }
     },
@@ -116,7 +117,9 @@ export default {
         },
         voirPlusFestival() {
             this.limit += 8;
-            api.getFestivals().then((festivals) => {
+            this.numPage += 1;
+            api.getFestivals(this.numPage).then((festivals) => {
+                console.log(festivals);
                 festivals.data.map((festival) => {
                     this.festivals.push(festival);
                 });

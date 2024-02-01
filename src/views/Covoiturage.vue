@@ -156,8 +156,8 @@
 import api from '@/api';
 import { myMixins } from '@/mixins/myMixins';
 import MapModal from '@/components/modals/MapModal.vue';
+import Vue from 'vue';
 
-const fakePanier = { total: 10 }
 export default {
     name: 'CovoiturageView',
     mixins: [myMixins],
@@ -275,6 +275,7 @@ export default {
                     api.createPack(pack).then((pack) => { })
                 })
             }
+
         },
         closeMapModal(covoiturage) {
             covoiturage.showMap = false;

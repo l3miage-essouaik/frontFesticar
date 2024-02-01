@@ -87,8 +87,10 @@
                     </p>
                 </div>
 
+
+
             </div>
-            {{ paniers }}
+            {{ packs }}
         </div>
     </div>
 </template>
@@ -96,13 +98,18 @@
 <script>
 import CartIcon from '../components/Icons/CartIcon.vue'
 import api from '@/api';
+import { myMixins } from '@/mixins/myMixins';
+import Vue from 'vue';
 
 export default {
     name: 'PanierView',
     data() {
         return {
             counter: 0,
-            paniers: []
+            panier: {},
+            lieuPacks: [],
+            packs: [],
+            covoiturage : {},
         }
     },
     methods: {
@@ -117,9 +124,14 @@ export default {
     mounted() {
         if (localStorage.getItem('userId')) {
             api.getPanierByUser(localStorage.getItem('userId')).then((response) => {
-                console.log(response);
-                this.paniers.push(response.data);
+                const paniersEnAttente = response.data.filter(panier => panier.etat === "EN_ATTENTE");
+
+                // Ajouter les paniers filtrés à votre liste (this.paniers)
+                this.panier = paniersEnAttente;
             });
+            setTimeout(async () => {
+                this.packs = (await api.getPackByIdPanier(this.panier[0].idPanier)).data;
+            }, 200)
         }
 
         // api.updateNbPlaces({

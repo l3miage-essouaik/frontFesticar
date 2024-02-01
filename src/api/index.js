@@ -7,8 +7,8 @@ class Api {
         });
     }
 
-    getFestivals() {
-        return this.axios.get('/api/allFestivals'); 
+    getFestivals(numPage) {
+        return this.axios.get(`/api/festivals/?numPage=${numPage !== null && numPage !== undefined ? numPage : 0}&taille=8`);
     }
 
     getFestivalById(id){
@@ -85,6 +85,10 @@ class Api {
 
     updateNbPlaces(updatedPack){
         return this.axios.put(`/api/panier/updateNbPlaces`,updatedPack);
+    }
+
+    getPackByIdPanier(idPanier){
+        return this.axios.get(`/api/pack/allPack?panierId=${idPanier}`);
     }
 }
 
