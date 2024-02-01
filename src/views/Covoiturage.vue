@@ -231,7 +231,7 @@ export default {
                     }).catch(reject);
                 }
                 if (userId) {
-                    api.createPanier(userId, { dateCreation: new Date() }).then(panier => {
+                    api.createPanier(userId, { dateCreation: new Date(),etat: 2 }).then(panier => {
                         resolve(panier.data.idPanier);
 
                     }).catch(reject);
@@ -244,6 +244,9 @@ export default {
             if (userId) {
                 let panierId;
                 if (!localStorage.getItem('anonymousPanierId')) {
+                    api.getPanierByUser(userId).then((data)=>{
+                        data.data
+                    })
                     panierId = await this.createPanier(null, userId);
                 } else {
                     panierId = localStorage.getItem('anonymousPanierId');
