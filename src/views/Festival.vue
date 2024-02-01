@@ -72,7 +72,6 @@ export default {
         const festivalId = this.$route.params.id;
         api.getFestivalById(festivalId).then((data)=>{
             this.festival = data.data;
-            console.log(this.festival);
         })
         api.getFestivals().then((data) => {
             this.festivals = data.data;

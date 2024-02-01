@@ -190,11 +190,9 @@ export default {
         getCovWithCriterias() {
             api.getCovoiturageByCriteriaAndFestivalId(this.$route.params.festivalId, this.ville, this.modele,
                 this.placeDispo, this.prix).then((data) => {
-                    console.log(data);
                 })
         },
         incrementCounter(covoiturage, nbPlaces, nbRes) {
-            console.log(nbPlaces - nbRes);
             if ((nbPlaces - nbRes) == covoiturage.counter) {
                 covoiturage.counter;
             } else {
@@ -215,7 +213,6 @@ export default {
             this.loading = true;
             api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.page, this.limit)
                 .then((data) => {
-                    console.log(data.data);
                     const nouveauxCovoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false, counter: 1, showMap: false }));
                     this.covoiturages.push(...nouveauxCovoiturages);
                     this.destination = this.covoiturages[0].festival.nomFestival;
@@ -244,15 +241,22 @@ export default {
             if (userId) {
                 let panierId;
                 if (!localStorage.getItem('anonymousPanierId')) {
-                    api.getPanierByUser(userId).then((data)=>{
-                        data.data
+                    api.getPanierByUser(userId).then(async (data)=>{
+                        let paniers = data.data;
+                        let panierEnAttente = paniers.find(panier => panier.etat === "EN_ATTENTE");
+                        if(!panierEnAttente) {
+                            panierId = await this.createPanier(null, userId);
+                        }else{
+                            panierId = panierEnAttente.idPanier;
+                        }
                     })
-                    panierId = await this.createPanier(null, userId);
                 } else {
                     panierId = localStorage.getItem('anonymousPanierId');
                 }
-                const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
-                api.createPack(pack).then((pack) => { })
+                setTimeout(()=>{
+                    const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
+                    api.createPack(pack).then((pack) => { })
+                },300)
             } else {
                 let idAnonymousUser;
                 if (localStorage.getItem('anonymousUserId')) {
@@ -286,11 +290,9 @@ export default {
         },
         closeMapModal(covoiturage) {
             covoiturage.showMap = false;
-            console.log(covoiturage.showMap);
         },
         showMapModal(covoiturage) {
             covoiturage.showMap = true;
-            console.log(covoiturage.showMap);
 
         },
         async getArretHoraire(idCov, idLieu) {
