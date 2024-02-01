@@ -89,7 +89,7 @@ export default {
           this.user.prenom = result.user.displayName.split(' ')[0];
           this.user.email = result.user.email;
           this.user.telephone = this.generateRandomPhoneNumber(),
-            this.user.mdp = "niestzche-vous";
+          this.user.mdp = "niestzche-vous";
           // Close sign-up modal
           this.$emit('close-LoginModal');
           this.createUser();
@@ -98,8 +98,8 @@ export default {
             try {
               const userData = await api.getUserByEmail(this.user.email);
               localStorage.setItem('userId', userData.data.id);
-              this.affectPanierToUser();
               if (localStorage.getItem('anonymousPanierId') != null) {
+                this.affectPanierToUser();
                 localStorage.removeItem('anonymousPanierId');
               }
             } catch (error) {

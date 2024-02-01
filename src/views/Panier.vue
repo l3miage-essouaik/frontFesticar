@@ -116,10 +116,20 @@ export default {
     },
     mounted() {
         if (localStorage.getItem('userId')) {
-            api.get('/api/panier/?' + localStorage.getItem('userId')).then((response) => {
+            api.getPanierByUser(localStorage.getItem('userId')).then((response) => {
+                console.log(response);
                 this.paniers.push(response.data);
             });
         }
+
+        // api.updateNbPlaces({
+        //     "panier": 30,
+        //     "horaire": "13:56",
+        //     "idCovoiturage": 156,
+        //     "nbPlacesReserves": 3
+        // }).then((resp)=>{
+        //     console.log(resp);
+        // })
 
     }
 };

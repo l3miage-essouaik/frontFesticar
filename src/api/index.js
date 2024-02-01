@@ -25,6 +25,7 @@ class Api {
         if (sousDomaine) url += `sousDomaine=${sousDomaine}&`;
 
         // Supprimez le dernier '&' de l'URL
+        url += "numPage=0&taille=10&"
         url = url.slice(0, -1);
 
         return this.axios.get(url);
@@ -75,11 +76,15 @@ class Api {
     }
 
     affectPanierToUser(idUser,idPanier){
-        return this.axios.patch(`/api/utilisateur/${idPanier}/${idUser}`);
+        return this.axios.post(`/api/panier/${idPanier}/${idUser}`);
     }
 
     getPanierByUser(idUser){
         return this.axios.get(`/api/panier/?utilisateurId=`+idUser);
+    }
+
+    updateNbPlaces(updatedPack){
+        return this.axios.put(`/api/panier/updateNbPlaces`,updatedPack);
     }
 }
 
