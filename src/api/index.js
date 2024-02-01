@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { update } from 'firebase/database';
 
 class Api {
     constructor(url) {
@@ -84,16 +85,26 @@ class Api {
     }
 
     updateNbPlaces(updatedPack){
-        return this.axios.put(`/api/panier/updateNbPlaces`,updatedPack);
+        return this.axios.put(`/api/pack/updateNbPlaces`,updatedPack);
     }
 
     getPackByIdPanier(idPanier){
         return this.axios.get(`/api/pack/allPack?panierId=${idPanier}`);
     }
 
+
     logUserbyEmailandMdp(email, mdp){
         return this.axios.get(`/api/utilisateur/login?email=${email}&mdp=${mdp}`);
     }
+
+    updateEtatPanier(idPanier,etatPanier) { 
+        return this.axios.put(`/api/panier/?panierId=${idPanier}&etatPanier=${etatPanier}`)
+    }
+
+    deletePack(horaire, idCov, panierId){
+        return this.axios.delete(`/api/pack/?horaire=${horaire}&idCovoiturage=${idCov}&panierId=${panierId}`)
+    }
+
 }
 
 export default new Api(process.env.VUE_APP_BACKEND_URL);

@@ -1,164 +1,179 @@
 <template lang="">
-    <div>
-        <!-- Title "Destination <Name of the festival that we clicked on to get here>"-->
-        <div class="flex flex-col items-center">
-            <h2 class="text-4xl font-extrabold dark:text-white title">
-                Destination {{destination}}
-            </h2>
-        </div>
-        <!-- a horizontal 1pt line to separate the title from the content -->
-        <hr class="mt-5 mb-5" style="border: -0.5px solid #054652; width: 100%;">
-        <div class="z-10">
-            <div class="bar">
-                <div class="location">
-                    <p>Départ</p>
-                    <!-- remove the outline from the input-->
-                    <input type="text" placeholder="Ville de départ" v-model="ville">
-                </div>
-                <div class="domain">
-                    <p>Véhicule</p>
-                    <select v-model="modele">
-                        <option value="" style="font-size:2px !important" disabled selected>Type de véhicule</option>
-                        <!-- Placeholder -->
-                        <option v-for="(typeV, index) in typesVehicule" :key="index" :value="typeV">{{ typeV }}
-                        </option>
-                    </select>
-                </div>
-                <div class="domain">
-                    <p>Places disponibles</p>
-                    <input type="text" placeholder="Nombre de places disponibles" v-model="placeDispo">
-                </div>
-                <div class="domain">
-                    <p>Budget</p>
-                    <input type="text" placeholder="Quel est votre budget max ?" v-model="prix">
-                </div>
-                <div class="icon" v-on:click="getCovWithCriterias()">
-                    <div class="backgIcon">
-                        <SearchIcon color='white' />
-                    </div>
-                </div>
+<div>
+    <!-- Title "Destination <Name of the festival that we clicked on to get here>"-->
+    <div class="flex flex-col items-center">
+        <h2 class="text-4xl font-extrabold dark:text-white title">
+            Destination {{destination}}
+        </h2>
+    </div>
+    <div class="fixed top-0 left-0 w-full bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md z-50" v-if="showAlert" role="alert">
+        <div class="flex items-center justify-center">
+            <div class="mr-4">
+                <svg class="fill-current h-6 w-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+                </svg>
             </div>
-            <!--  -->
-        </div>
-        <!-- white space to separate the bar from the content -->
-        <div class="mt-32"></div>
-        <!-- Covoiturage -->
-        <div class="relative">
-            <div v-for="(covoiturage, index) in covoiturages" v-show="covoiturage.nbPlaces - covoiturage.nbPlacesReservées > 0" :key="index" class="grid grid-cols-12 gap-8 panier">
-                <div class="col-span-6 flex items-center">
-                    <div class="ml-2">
-                        <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium ml-2">{{covoiturage.utilisateur.nom}} {{covoiturage.utilisateur.prenom}}</p>
-                        <p class="text-xs text-gray-500 ml-2">Conducteur</p>
-                    </div>
-                    <div class="ml-5" @mouseover="covoiturage.showInfo = true" @mouseleave="covoiturage.showInfo = false">
-                        <div class="information"> ℹ</div>
-                        <div class="tooltip" v-if="covoiturage.showInfo">
-                            <p>Type de voiture: {{covoiturage.modelVoiture}}</p>
-                            <p>Modèle: {{covoiturage.marque}} </p>
-                            <p>Couleur: {{covoiturage.couleur}} </p>
-                            <p>Nombre de passagers: {{ covoiturage.nbPlacesReservées }}</p>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-span-6 text-right">
-                    <template v-for="(arretOption, index2) in covoiturage.arretCovoiturageList" :key="index2">
-                        <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-small prix">{{ arretOption.tarif * covoiturage.counter}} €</p>
-
-                    </template>
-                </div>
-                <div class="col-span-2 relative h-4  flex items-center">
-                    <div class="ml-5 flex flex-col justify-center">
-                        <div class="hour">
-                        <template v-for="(arretOption, index3) in covoiturage.arretCovoiturageList" :key="index3">
-                            <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu"  class="text-sm font-medium">{{arretOption.arretCovoiturageId?.horaire}}</p>
-                        </template>
-                            <p class="text-sm font-small">6h30</p>
-                        </div>
-                    </div>
-                    <div class="containerCircle flex items-center ml-2">
-                        <div class="circle"></div>
-                        <div class="line"></div>
-                        <div class="circleDown flex items-start">
-                        </div>
-                    </div>
-                </div>
-    
-                <template v-for="(arret, arretIndex) in covoiturage.arretCovoiturageList" :key="arretIndex">
-                    <template v-if="arret.estDepart">
-                        <div class="col-span-10 h-4" style="margin-top:-10px">
-                            <!-- v-on:click="showMapModal(covoiturage)" -->
-                            <select class="text-sm font-medium" v-model="selectedArrets[index]" >
-                                <option disabled value="">Choisissez un arrêt</option>
-                                <option v-for="(arretOption, index) in covoiturage.arretCovoiturageList"  :key="index" :value="arretOption.lieuCovoiturage.nomLieu">
-                                {{ arretOption.lieuCovoiturage.nomLieu }}
-                                </option>
-                            </select>
-                            <template v-for="(arretOption, i) in covoiturage.arretCovoiturageList" :key="i">
-                                <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-small">{{ arretOption.lieuCovoiturage.codeInsee?.nomCommune }}, {{ convertirTypeLieu(arretOption.lieuCovoiturage.typeLieu) }}</p>
-                            </template>
-                        </div>
-                        <div v-if="covoiturage.showMap && arret" class="backdrop" style="position:absolute"> 
-                            <MapModal class="centerModal" 
-                                :lng="arret.lieuCovoiturage.codeInsee?.longitude" 
-                                :lat="arret.lieuCovoiturage.codeInsee?.latitude" :showMap="covoiturage.showMap" @close-map-modal="closeMapModal(covoiturage)" />
-                        </div>
-                    </template>
-                </template>
-       
-                <div class="col-span-2 relative h-4  items-center">
-                    <div class="ml-5 mt-8 hourDown">
-                        <p class="text-sm font-medium">20:00</p>
-                    </div>
-                </div>
-                <div class="col-span-10 h-4  mt-8">
-                    <p class="text-sm font-medium">{{destination}}</p>
-                    <p class="text-sm font-small">{{ covoiturage.festival.commune && covoiturage.festival.commune.nomCommune ? covoiturage.festival.commune.nomCommune : 'Neverland' }}, 
-                    {{ covoiturage.festival.commune && covoiturage.festival.commune.departement && covoiturage.festival.commune.departement.nomDepartement 
-                    ? covoiturage.festival.commune.departement.nomDepartement : 'Neverland' }}</p>
-                </div>
-                <div class="col-span-6 h-4 mt-8 flex justify-between items-center">
-                    <p class="text-sm font-medium" >Nombre de places disponibles &nbsp;:&nbsp; {{covoiturage.nbPlaces - covoiturage.nbPlacesReservées }}</p>
-                    <form class="max-w-xs ml-4">
-                        <div class="relative flex items-center">
-                            <div v-on:click="decrementCounter(covoiturage)" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
-                                -
-                            </div>
-                            <input type="text" id="counter-input" data-input-counter 
-                            class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" value="12" v-model="covoiturage.counter" required>
-                            <div v-on:click="incrementCounter(covoiturage,covoiturage.nbPlaces,covoiturage.nbPlacesReservées)" type="button" id="increment-button" data-input-counter-increment="counter-input">
-                                +
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-span-6 h-4 mt-8 justify-end">
-                    <template v-for="(arretOption, index8) in covoiturage.arretCovoiturageList" :key="index8">
-                        <div v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="addToCart" v-on:click="ajouterAuPanier(covoiturage, arretOption.lieuCovoiturage.idLieu)">
-                            Ajouter au panier</div>
-                    </template>
-                </div>
-      
-                <!-- <div style="position:absolute">{{covoiturage}}</div>  -->
+            <div>
+                <p class="font-bold">Votre covoiturage a été ajouté avec succès</p>
             </div>
-            <div class="flex justify-center items-center">
-                <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlus()"
-                    v-if="!loading"
-                    :class="{ 'disabledButton': !tousCovoituragesChargees }">
-                    Voir plus
-                </button>
-            </div>
-      
         </div>
     </div>
-    </template>
-    
+
+    <!-- a horizontal 1pt line to separate the title from the content -->
+    <hr class="mt-5 mb-5" style="border: -0.5px solid #054652; width: 100%;">
+    <div class="z-10">
+        <div class="bar">
+            <div class="location">
+                <p>Départ</p>
+                <!-- remove the outline from the input-->
+                <input type="text" placeholder="Ville de départ" v-model="ville">
+            </div>
+            <div class="domain">
+                <p>Véhicule</p>
+                <select v-model="modele">
+                    <option value="" style="font-size:2px !important" disabled selected>Type de véhicule</option>
+                    <!-- Placeholder -->
+                    <option v-for="(typeV, index) in typesVehicule" :key="index" :value="typeV">{{ typeV }}
+                    </option>
+                </select>
+            </div>
+            <div class="domain">
+                <p>Places disponibles</p>
+                <input type="text" placeholder="Nombre de places disponibles" v-model="placeDispo">
+            </div>
+            <div class="domain">
+                <p>Budget</p>
+                <input type="text" placeholder="Quel est votre budget max ?" v-model="prix">
+            </div>
+            <div class="icon" v-on:click="getCovWithCriterias()">
+                <div class="backgIcon">
+                    <SearchIcon color='white' />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- white space to separate the bar from the content -->
+    <div class="mt-32"></div>
+    <!-- Covoiturage -->
+    <div class="relative">
+        <div v-for="(covoiturage, index) in covoiturages" v-show="covoiturage.nbPlaces - covoiturage.nbPlacesReservées > 0" :key="index" class="grid grid-cols-12 gap-8 panier">
+            <div class="col-span-6 flex items-center">
+                <div class="ml-2">
+                    <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
+                </div>
+                <div>
+                    <p class="text-sm font-medium ml-2">{{covoiturage.utilisateur.nom}} {{covoiturage.utilisateur.prenom}}</p>
+                    <p class="text-xs text-gray-500 ml-2">Conducteur</p>
+                </div>
+                <div class="ml-5" @mouseover="covoiturage.showInfo = true" @mouseleave="covoiturage.showInfo = false">
+                    <div> <InfoIcon/></div>
+                    <div class="tooltip" v-if="covoiturage.showInfo">
+                        <p>Type de voiture: {{covoiturage.modelVoiture}}</p>
+                        <p>Modèle: {{covoiturage.marque}} </p>
+                        <p>Couleur: {{covoiturage.couleur}} </p>
+                        <p>Nombre de passagers: {{ covoiturage.nbPlacesReservées }}</p>
+                    </div>
+                </div>
+                <template v-for="(arretOption, index2) in covoiturage.arretCovoiturageList" :key="index2">
+                    <PinIcon class="ml-8" v-on:click="showMapModal(covoiturage)" v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" />
+                </template>
+            </div>
+
+            <div class="col-span-6 text-right">
+                <template v-for="(arretOption, index2) in covoiturage.arretCovoiturageList" :key="index2">
+                    <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-small prix">{{ arretOption.tarif * covoiturage.counter}} €</p>
+                </template>
+            </div>
+            <div class="col-span-2 relative h-4  flex items-center">
+                <div class="ml-5 flex flex-col justify-center">
+                    <div class="hour">
+                        <template v-for="(arretOption, index3) in covoiturage.arretCovoiturageList" :key="index3">
+                            <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-medium">{{arretOption.arretCovoiturageId?.horaire}}</p>
+                        </template>
+                        <p class="text-sm font-small">6h30</p>
+                    </div>
+                </div>
+                <div class="containerCircle flex items-center ml-2">
+                    <div class="circle"></div>
+                    <div class="line"></div>
+                    <div class="circleDown flex items-start">
+                    </div>
+                </div>
+            </div>
+
+            <template v-for="(arret, arretIndex) in covoiturage.arretCovoiturageList" :key="arretIndex">
+                <template v-if="arret.estDepart">
+                    <div class="col-span-10 h-4" style="margin-top:-10px">
+                        <!-- v-on:click="showMapModal(covoiturage)" -->
+                        <select class="text-sm font-medium" v-model="selectedArrets[index]">
+                            <option disabled value="">Choisissez un arrêt</option>
+                            <option v-for="(arretOption, index) in covoiturage.arretCovoiturageList" :key="index" :value="arretOption.lieuCovoiturage.nomLieu">
+                                {{ arretOption.lieuCovoiturage.nomLieu }}
+                            </option>
+                        </select>
+                        <template v-for="(arretOption, i) in covoiturage.arretCovoiturageList" :key="i">
+                            <p v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="text-sm font-small">{{ arretOption.lieuCovoiturage.codeInsee?.nomCommune }}, {{ convertirTypeLieu(arretOption.lieuCovoiturage.typeLieu) }}</p>
+                        </template>
+                    </div>
+
+                    <template v-for="(arretOption, index8) in covoiturage.arretCovoiturageList" :key="index8">
+                        <div v-if="covoiturage.showMap && arret && selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="backdrop" style="position:absolute">
+                            <MapModal class="centerModal" :lng="arretOption.lieuCovoiturage.codeInsee?.longitude" :lat="arretOption.lieuCovoiturage.codeInsee?.latitude" :showMap="covoiturage.showMap" @close-map-modal="closeMapModal(covoiturage)" />
+                        </div>
+                    </template>
+
+                </template>
+            </template>
+
+            <div class="col-span-2 relative h-4  items-center">
+                <div class="ml-5 mt-8 hourDown">
+                    <p class="text-sm font-medium">20:00</p>
+                </div>
+            </div>
+            <div class="col-span-10 h-4  mt-8">
+                <p class="text-sm font-medium">{{destination}}</p>
+                <p class="text-sm font-small">{{ covoiturage.festival.commune && covoiturage.festival.commune.nomCommune ? covoiturage.festival.commune.nomCommune : 'Neverland' }},
+                    {{ covoiturage.festival.commune && covoiturage.festival.commune.departement && covoiturage.festival.commune.departement.nomDepartement 
+                ? covoiturage.festival.commune.departement.nomDepartement : 'Neverland' }}</p>
+            </div>
+            <div class="col-span-6 h-4 mt-8 flex justify-between items-center">
+                <p class="text-sm font-medium">Nombre de places disponibles &nbsp;:&nbsp; {{covoiturage.nbPlaces - covoiturage.nbPlacesReservées }}</p>
+                <form class="max-w-xs ml-4">
+                    <div class="relative flex items-center">
+                        <div v-on:click="decrementCounter(covoiturage)" type="button" id="decrement-button" data-input-counter-decrement="counter-input">
+                            <MinusIcon />
+                        </div>
+                        <input type="text" id="counter-input" data-input-counter class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" value="12" v-model="covoiturage.counter" required>
+                        <div v-on:click="incrementCounter(covoiturage,covoiturage.nbPlaces,covoiturage.nbPlacesReservées)" type="button" id="increment-button" data-input-counter-increment="counter-input">
+                            <PlusIcon />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-span-6 h-4 mt-8 justify-end">
+                <template v-for="(arretOption, index8) in covoiturage.arretCovoiturageList" :key="index8">
+                    <div v-if="selectedArrets[index] === arretOption.lieuCovoiturage.nomLieu" class="addToCart" v-on:click="ajouterAuPanier(covoiturage, arretOption.lieuCovoiturage.idLieu)">
+                        Ajouter au panier</div>
+                </template>
+            </div>
+
+            <!-- <div style="position:absolute">{{covoiturage}}</div>  -->
+        </div>
+        <div class="flex justify-center items-center">
+            <button class="voirPlus w-10/12 md:w-2/4 lg:w-1/4" v-on:click="() => voirPlus()" v-if="!loading" :class="{ 'disabledButton': !tousCovoituragesChargees }">
+                Voir plus
+            </button>
+        </div>
+
+    </div>
+</div>
+</template>
+
 <script>
 import api from '@/api';
-import { myMixins } from '@/mixins/myMixins';
+import {
+    myMixins
+} from '@/mixins/myMixins';
 import MapModal from '@/components/modals/MapModal.vue';
 import Vue from 'vue';
 
@@ -182,6 +197,7 @@ export default {
             prix: '',
             horaire: '',
             selectedArrets: {},
+            showAlert: false,
         }
     },
     components: {
@@ -190,8 +206,7 @@ export default {
     methods: {
         getCovWithCriterias() {
             api.getCovoiturageByCriteriaAndFestivalId(this.$route.params.festivalId, this.ville, this.modele,
-                this.placeDispo, this.prix).then((data) => {
-                })
+                this.placeDispo, this.prix).then((data) => {})
         },
         incrementCounter(covoiturage, nbPlaces, nbRes) {
             if ((nbPlaces - nbRes) == covoiturage.counter) {
@@ -214,7 +229,12 @@ export default {
             this.loading = true;
             api.getCovoiturageByFestivalId(this.$route.params.festivalId, this.page, this.limit)
                 .then((data) => {
-                    const nouveauxCovoiturages = data.data.map(covoiturage => ({ ...covoiturage, showInfo: false, counter: 1, showMap: false }));
+                    const nouveauxCovoiturages = data.data.map(covoiturage => ({
+                        ...covoiturage,
+                        showInfo: false,
+                        counter: 1,
+                        showMap: false
+                    }));
                     this.covoiturages.push(...nouveauxCovoiturages);
                     this.destination = this.covoiturages[0].festival.nomFestival;
                     this.loading = false;
@@ -223,13 +243,18 @@ export default {
         createPanier(idAnonymousUser, userId) {
             return new Promise((resolve, reject) => {
                 if (idAnonymousUser) {
-                    api.createPanier(idAnonymousUser, { dateCreation: new Date() }).then(panier => {
+                    api.createPanier(idAnonymousUser, {
+                        dateCreation: new Date()
+                    }).then(panier => {
                         localStorage.setItem('anonymousPanierId', panier.data.idPanier);
                         resolve(panier.data.idPanier);
                     }).catch(reject);
                 }
                 if (userId) {
-                    api.createPanier(userId, { dateCreation: new Date(), etat: 2 }).then(panier => {
+                    api.createPanier(userId, {
+                        dateCreation: new Date(),
+                        etat: 2
+                    }).then(panier => {
                         resolve(panier.data.idPanier);
 
                     }).catch(reject);
@@ -242,22 +267,27 @@ export default {
             if (userId) {
                 let panierId;
                 if (!localStorage.getItem('anonymousPanierId')) {
-                    api.getPanierByUser(userId).then(async (data)=>{
+                    api.getPanierByUser(userId).then(async (data) => {
                         let paniers = data.data;
                         let panierEnAttente = paniers.find(panier => panier.etat === "EN_ATTENTE");
-                        if(!panierEnAttente) {
+                        if (!panierEnAttente) {
                             panierId = await this.createPanier(null, userId);
-                        }else{
+                        } else {
                             panierId = panierEnAttente.idPanier;
                         }
                     })
                 } else {
                     panierId = localStorage.getItem('anonymousPanierId');
                 }
-                setTimeout(()=>{
-                    const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
-                    api.createPack(pack).then((pack) => { })
-                },300)
+                setTimeout(() => {
+                    const pack = {
+                        "panier": panierId,
+                        "horaire": horaire,
+                        "idCovoiturage": covoiturage.idCovoiturage,
+                        "nbPlacesReserves": covoiturage.counter
+                    };
+                    api.createPack(pack).then((pack) => {})
+                }, 1000)
             } else {
                 let idAnonymousUser;
                 if (localStorage.getItem('anonymousUserId')) {
@@ -283,11 +313,19 @@ export default {
                     } else {
                         panierId = localStorage.getItem('anonymousPanierId');
                     }
-                    const pack = { "panier": panierId, "horaire": horaire, "idCovoiturage": covoiturage.idCovoiturage, "nbPlacesReserves": covoiturage.counter };
-                    api.createPack(pack).then((pack) => { })
+                    const pack = {
+                        "panier": panierId,
+                        "horaire": horaire,
+                        "idCovoiturage": covoiturage.idCovoiturage,
+                        "nbPlacesReserves": covoiturage.counter
+                    };
+                    api.createPack(pack).then((pack) => {})
                 })
             }
-
+            this.showAlert = true;
+            setTimeout(() => {
+                this.showAlert = false;
+            }, 3000);
         },
         closeMapModal(covoiturage) {
             covoiturage.showMap = false;
@@ -321,7 +359,7 @@ export default {
 
 }
 </script>
-    
+
 <style scoped>
 .voirPlus {
     border: 1px solid #4AD3B8;
@@ -577,22 +615,20 @@ select:focus {
 }
 
 #increment-button {
-    border-radius: 100%;
     background-color: transparent;
     color: #054652 !important;
-    border: 2px solid #054652 !important;
     outline: none;
     padding: 0px 5px;
+    font-weight: 900;
 
 }
 
 #decrement-button {
-    border-radius: 100%;
     background-color: transparent;
     color: #054652 !important;
-    border: 2px solid #054652 !important;
     outline: none;
-    padding: 0px 5px;
+    font-weight: 900;
+
 }
 
 .border {
@@ -709,4 +745,3 @@ p {
     }
 }
 </style>
-    
