@@ -7,19 +7,19 @@
             </h2>
         </div>
         <div class="relative">
-            <div class="grid grid-cols-12 gap-8 panier" style='position: relative;'>
+            <div v-for="(pack, index) in packs" :key="index" class="grid grid-cols-12 gap-8 panier" style='position: relative;'>
                 <div class="col-span-6 flex items-center">
                     <div class="ml-2">
                         <img src="../assets/ragragui.png" alt="Your Image" class="w-10 h-10 object-cover rounded-full" />
                     </div>
                     <div>
-                        <p class="text-sm font-medium ml-2">Rass Lavoka</p>
+                        <p class="text-sm font-medium ml-2">{{ pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.utilisateur.nom }} {{ pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.utilisateur.prenom }} </p>
                         <p class="text-xs text-gray-500 ml-2">Conducteur</p>
                     </div>
-                </div>
+                </div>  
 
                 <div class="col-span-6 text-right">
-                    <p class="prix">66,6€</p>
+                    <p class="prix">{{pack.idPack.arretCovoiturage.tarif}} €</p>
                 </div>
                 <div class="col-span-2 relative h-4  flex items-center">
                     <div class="ml-5 flex flex-col justify-center">
@@ -37,8 +37,8 @@
                 </div>
 
                 <div class="col-span-10 h-4" style="margin-top:-10px">
-                    <p class="text-sm font-medium">UFR IM2AG</p>
-                    <p class="text-sm font-small">Saint-Martin-d’hères</p>
+                    <p class="text-sm font-medium">{{ pack.idPack.arretCovoiturage.lieuCovoiturage.nomLieu }}, {{ pack.idPack.arretCovoiturage.lieuCovoiturage.typeLieu }}</p>
+                    <p class="text-sm font-small">{{ pack.idPack.arretCovoiturage.lieuCovoiturage.codeInsee.nomCommune }}</p>
                 </div>
                 <div class="col-span-2 relative h-4  items-center">
                     <div class="ml-5 mt-8 hourDown">
@@ -46,8 +46,8 @@
                     </div>
                 </div>
                 <div class="col-span-10 h-4  mt-8">
-                    <p class="text-sm font-medium">Hellfest</p>
-                    <p class="text-sm font-small">Clisson Loire Atlantique</p>
+                    <p class="text-sm font-medium">{{pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.festival.nomFestival}}</p>
+                    <p class="text-sm font-small">{{ pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.festival.commune?.nomCommune ? pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.festival.commune?.nomCommune : 'Neverland' }} , {{ pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.festival.commune?.departement?.nomDepartement ? pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.festival.commune?.departement?.nomDepartement : 'Neverland' }}</p>
                 </div>
                 <div class="col-span-9 h-4  mt-8 flex justify-between items-center">
                     <p class="text-sm font-medium" v-if="counter > 1">Nombre de passagers</p>
@@ -125,6 +125,7 @@ export default {
         if (localStorage.getItem('userId')) {
             api.getPanierByUser(localStorage.getItem('userId')).then((response) => {
                 const paniersEnAttente = response.data.filter(panier => panier.etat === "EN_ATTENTE");
+                console.log(paniersEnAttente);
 
                 // Ajouter les paniers filtrés à votre liste (this.paniers)
                 this.panier = paniersEnAttente;
