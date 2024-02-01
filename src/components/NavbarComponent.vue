@@ -43,7 +43,7 @@
                     <div v-else>
                         <!-- User dropdown for authenticated users -->
                         <!-- Dropdown button for user dropdown -->
-                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
+                        <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar2"
                             v-on:click="showSignOut = !showSignOut"
                             class="flex items-center justify-between py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
                             <!-- Display user profile picture if available -->
@@ -57,7 +57,7 @@
                             </svg>
                         </button>
                         <!-- User dropdown menu -->
-                        <div id="dropdownNavbar" v-if="showSignOut"
+                        <div id="dropdownNavbar2" v-if="showSignOut"
                             class="z-10 absolute font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-400">
                                 <li>
@@ -144,25 +144,33 @@ export default {
                     // Handle sign-out error
                 });
             localStorage.removeItem('userId');
+            localStorage.removeItem('isSignedIn')
         }
     },
     created() {
         authService.onAuthStateChanged(user => {
             if (user) {
                 this.isSignedIn = true;
+                localStorage.setItem('isSignedIn', true);
                 this.currentUser = user;
                 this.userPicture = user.photoURL || require('@/assets/hellfest.png'); // Set user picture URL
             } else {
-                this.isSignedIn = false;
                 this.currentUser = null;
                 this.userPicture = require('@/assets/hellfest.png'); // Reset to default user picture
             }
         });
-        this.emitter.on('updateIsSignedIn', this.updateIsSignedIn);
+        setTimeout(() => {
+            this.emitter.on('updateIsSignedIn', this.updateIsSignedIn);
+        }, 1000);
+        // Check authentication state on page refresh
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            this.isSignedIn = true;
+        }
     },
-    mounted() { // Change onMounted to mounted
+    mounted() {
         initFlowbite();
-    }
+    },
 };
 </script>
 
