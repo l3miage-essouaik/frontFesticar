@@ -89,7 +89,7 @@
             <template v-for="(arret, arretIndex) in covoiturage.arretCovoiturageList" :key="arretIndex">
                 <template v-if="arret.estDepart">
                     <div class="col-span-10 h-4" style="margin-top:-10px">
-                        <!-- v-on:click="showMapModal(covoiturage)" -->
+                        
                         <select class="text-sm font-medium" v-model="selectedArret" >
                             <option disabled value="">Choisissez un arrêt</option>
                             <option v-for="(arretOption, index) in covoiturage.arretCovoiturageList"  :key="index" :value="arretOption.lieuCovoiturage.nomLieu">
@@ -110,7 +110,7 @@
    
             <div class="col-span-2 relative h-4  items-center">
                 <div class="ml-5 mt-8 hourDown">
-                    <p class="text-sm font-medium">20:00</p>
+                    <p class="text-sm font-medium"  v-on:click="showMapModal(covoiturage)">20:00</p>
                 </div>
             </div>
             <div class="col-span-10 h-4  mt-8">
