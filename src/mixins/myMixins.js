@@ -44,6 +44,8 @@ export const myMixins = {
                     return 'Auto-stop';
                 case "SORTIE_D'AUTOROUTE":
                     return "Sortie d'autoroute";
+                case "SUPERMARCHE":
+                    return "Supermarché"
                 default:
                     return typeLieu;
             }

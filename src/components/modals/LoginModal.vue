@@ -92,7 +92,6 @@ export default {
     },
     createUser() {
       api.createUser(this.user).then((data) => {
-        console.log(data);
         alert('User created successfully!');
 
       })
@@ -130,7 +129,6 @@ export default {
     /* eslint-enable no-undef */
     affectPanierToUser() {
       api.affectPanierToUser(localStorage.getItem('userId'), localStorage.getItem('anonymousPanierId')).then((data) => {
-        console.log(data);
       })
     }
   },

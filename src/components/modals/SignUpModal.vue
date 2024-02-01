@@ -82,7 +82,6 @@ export default {
     methods: {
         submitForm() {
             // Logic to handle form submission
-            console.log(this.user);
         },
         closeSignUpModal() {
             this.$emit('close-SignUpModal');
@@ -92,7 +91,6 @@ export default {
         },
         createUser() {
             api.createUser(this.user).then((data) => {
-                console.log(data);
                 alert('User created successfully!');
 
             })
@@ -111,7 +109,6 @@ export default {
                     this.createUser();
                     // Close sign-up modal
                     this.$emit('close-SignUpModal');
-                    console.log("rezultaaaa", result.user.email);
                 })
                 .catch(error => {
                     // Handle sign-in error
