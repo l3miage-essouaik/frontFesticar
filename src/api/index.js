@@ -76,12 +76,7 @@ class Api {
     }
 
     affectPanierToUser(idUser, idPanier) {
-        const headers = {
-            'Content-Type': 'application/json', // Assuming JSON data is being sent
-            'Access-Control-Allow-Origin': '*' // Change * to the appropriate origin if known
-        };
-    
-        return this.axios.post(`/api/pack/user/${idPanier}/${idUser}`, {}, { headers });
+        return this.axios.post(`/api/pack/anas?panierId=${idPanier}&userId=${idUser}`);
     }
 
     getPanierByUser(idUser){
