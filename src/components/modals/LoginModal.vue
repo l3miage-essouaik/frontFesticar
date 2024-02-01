@@ -13,13 +13,13 @@
           </div>
           <form>
             <label for='password'>E-mail</label>
-            <input class="custom-input" type='email' id='password' name='password' placeholder="Entrez votre email">
+            <input class="custom-input" type='email' id='password' name='password' placeholder="Entrez votre email" v-model = "email" >
             <label for='password'>Mot de passe</label>
-            <input class="custom-input" type='password' id='password' name='password'
+            <input class="custom-input" type='password' id='password' name='password' v-model = "mdp"
               placeholder="Entrez votre mot de passe">
           </form>
           <div class="buttons">
-            <button class="button">Connexion</button>
+            <button class="button" v-on:click="logUserbyEmailandMdp">Connexion</button>
             <button class="facebook-button">
               <span @click="googleSignIn()" style="display: flex; align-items: center;">Continuer avec
                 <GoogleIcon style=" margin-left: 3px;" />
@@ -62,6 +62,8 @@ export default {
         mdp: '',
         typeUtilisateur: 0,
       },
+      mdp: '',
+      email: '',
     }
   },
   created() {
@@ -72,6 +74,17 @@ export default {
     },
     openSignUpModal() {
       this.$emit('show-SignUpModal');
+    },
+    logUserbyEmailandMdp(){
+      api.logUserbyEmailandMdp(this.email, this.mdp).then((data) => {
+        console.log(data);
+        if (data.data != null) {
+          localStorage.setItem('userId', data.data.id);
+          this.$emit('close-LoginModal');
+        } else {
+          alert('Email ou mot de passe incorrect');
+        }
+      })
     },
     createUser() {
       api.createUser(this.user).then((data) => {

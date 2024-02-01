@@ -90,6 +90,10 @@ class Api {
     getPackByIdPanier(idPanier){
         return this.axios.get(`/api/pack/allPack?panierId=${idPanier}`);
     }
+
+    logUserbyEmailandMdp(email, mdp){
+        return this.axios.get(`/api/utilisateur/login?email=${email}&mdp=${mdp}`);
+    }
 }
 
 export default new Api(process.env.VUE_APP_BACKEND_URL);
