@@ -52,8 +52,14 @@
             </div>
         </div>
     </div>
+
     <!-- white space to separate the bar from the content -->
     <div class="mt-32"></div>
+    <div class="ml-56 mb-8">
+        <router-link style="color:#35a28c;text-decoration: underline;" :to="`/`">Accueil</router-link> <span style="color:#35a28c">/ </span>
+        <router-link style="color:#35a28c;text-decoration: underline;" :to="`/festival/${idFestival}`">Festival</router-link> <span style="color:#35a28c">/ </span>
+        <router-link :to="`/covoiturage/${idFestival}`" style="color:#666666;">Covoiturage</router-link>
+    </div>
     <!-- Covoiturage -->
     <div class="relative">
         <div v-for="(covoiturage, index) in covoiturages" v-show="covoiturage.nbPlaces - covoiturage.nbPlacesReservées > 0" :key="index" class="grid grid-cols-12 gap-8 panier">
@@ -66,7 +72,9 @@
                     <p class="text-xs text-gray-500 ml-2">Conducteur</p>
                 </div>
                 <div class="ml-5" @mouseover="covoiturage.showInfo = true" @mouseleave="covoiturage.showInfo = false">
-                    <div> <InfoIcon/></div>
+                    <div>
+                        <InfoIcon />
+                    </div>
                     <div class="tooltip" v-if="covoiturage.showInfo">
                         <p>Type de voiture: {{covoiturage.modelVoiture}}</p>
                         <p>Modèle: {{covoiturage.marque}} </p>
@@ -176,7 +184,6 @@ import {
 } from '@/mixins/myMixins';
 import MapModal from '@/components/modals/MapModal.vue';
 import Vue from 'vue';
-
 export default {
     name: 'CovoiturageView',
     mixins: [myMixins],
@@ -198,6 +205,7 @@ export default {
             horaire: '',
             selectedArrets: {},
             showAlert: false,
+            idFestival: "",
         }
     },
     components: {
@@ -350,6 +358,7 @@ export default {
         }
     },
     mounted() {
+        this.idFestival = this.$route.params.festivalId;
         this.fetchCovoiturages();
         this.getArretHoraire(88183, "49069-C-003");
         api.getModelVoiture().then((data) => {

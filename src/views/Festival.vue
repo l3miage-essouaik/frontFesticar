@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div >
+
         <!-- Image floue en arrière-plan -->
         <div style="margin-bottom: 10%;">
             <div class="bg-image">
@@ -27,6 +28,10 @@
                     <div class="text-center">
                         <router-link :to="`/covoiturage/${festival.idFestival}`" class="attend-button mx-auto block" >J'y vais</router-link>
                     </div>
+                    <div class="text-center">
+                        <router-link :to="`/`" class="retour-button mx-auto block" >Voir tous les festivals</router-link>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -151,6 +156,22 @@ export default {
     padding: 10px 20px;
     font-size: 16px;
     /* Ajustez la taille du bouton */
+}
+.retour-button{
+    display: block;
+    margin-top: 20px;
+    /* Espace entre les détails et le bouton */
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #35a28c;
+    background-color: #35a28c;
+    color: #fff;
+    font-weight: 500;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 0px;
+    margin: 5% 0%;
+    width: 10%;
 }
 
 .attend-button {

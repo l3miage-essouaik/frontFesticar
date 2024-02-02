@@ -7,12 +7,13 @@ import './index.css'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import './fireBaseConfig';
+import './assets/css/global.css'
 import mitt from 'mitt';
 
 const emitter = mitt();
 
 const app = createApp(App).provide('emitter', emitter);
-app.use(router).use(Vuetify);
+app.use(router);
 app.component('VueDatePicker', VueDatePicker);
 
 

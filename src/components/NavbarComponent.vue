@@ -5,7 +5,7 @@
                 <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="../assets/logo.png" class="h-20" alt="Flowbite Logo" />
                 </router-link>
-                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Festicar</span>
+                <h1 class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Festicar</h1>
                 <div class="flex items-center space-x-3">
                     <router-link to="/panier"
                         class="text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500">

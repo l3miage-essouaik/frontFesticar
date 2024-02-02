@@ -6,21 +6,27 @@
                 Mon Panier <span v-if="packs?.length > 0"> {{ this.total }} € </span>
             </h2>
         </div>
-        <div class="fixed top-0 left-0 w-full bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md z-50" v-if="showAlert" role="alert">
-    <div class="flex items-center justify-center">
-        <div class="mr-4">
-            <svg class="fill-current h-6 w-6 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/>
-            </svg>
+        <div class="fixed top-0 left-0 w-full bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md z-50"
+            v-if="showAlert" role="alert">
+            <div class="flex items-center justify-center">
+                <div class="mr-4">
+                    <svg class="fill-current h-6 w-6 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path
+                            d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-bold">Votre pack a été supprimé</p>
+                </div>
+            </div>
         </div>
-        <div>
-            <p class="font-bold">Votre pack a été supprimé</p>
-        </div>
-    </div>
-</div>
         <div v-if="packs?.length == 0" class="flex justify-center items-center h-screen">
             <h1 style="font-size: 30px;font-weight: 600;" class="text-center">Votre panier est vide</h1>
         </div>
+        <div class="ml-56 mb-8">
+        <router-link style="color:#35a28c;text-decoration: underline;" :to="`/`">Accueil</router-link> <span style="color:#35a28c">/ </span>
+        <router-link :to="`/Panier`" style="color:#666666;">Panier</router-link>
+    </div>
         <div class="relative">
             <div v-for="(pack, index) in packs" :key="index" class="grid grid-cols-12 gap-8 panier"
                 style='position: relative;'>
@@ -87,14 +93,14 @@
                     <div class="max-w-xs relative flex items-center">
                         <form class="max-w-xs ml-4">
                             <div class="relative flex items-center">
-                                <button v-on:click="decrementCounter(pack)" type="button">                    
-                                   <MinusIcon/>
+                                <button v-on:click="decrementCounter(pack)" type="button">
+                                    <MinusIcon />
                                 </button>
                                 <input type="text" id="counter-input" data-input-counter
                                     class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
                                     placeholder="" value="12" v-model="pack.nbPlacesReserves" required>
                                 <button v-on:click="incrementCounter(pack)" type="button">
-                                    <PlusIcon/>
+                                    <PlusIcon />
                                 </button>
                             </div>
                         </form>
@@ -143,7 +149,7 @@ export default {
                     console.log(this.showAlert);
 
                     setTimeout(() => {
-                        window.location.reload();                    
+                        window.location.reload();
                     }, 580);
                 }).catch(error => {
                     // Gérer les erreurs éventuelles lors de la suppression
@@ -152,15 +158,15 @@ export default {
         },
         etesVousSur(idPanier) {
             if (confirm("Êtes-vous sûr ?")) {
-               // 
-                this.packs.map(pack=>{
+                // 
+                this.packs.map(pack => {
                     console.log(pack.idPack);
-                    let updatedPack = { panier: pack.idPack.panier.idPanier,horaire: pack.idPack.arretCovoiturage.arretCovoiturageId.horaire,idCovoiturage: pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.idCovoiturage, nbPlacesReserves: pack.nbPlacesReserves  }
-                    api.updateNbPlaces(updatedPack).then(data=>{
+                    let updatedPack = { panier: pack.idPack.panier.idPanier, horaire: pack.idPack.arretCovoiturage.arretCovoiturageId.horaire, idCovoiturage: pack.idPack.arretCovoiturage.arretCovoiturageId.idCovoiturage.idCovoiturage, nbPlacesReserves: pack.nbPlacesReserves }
+                    api.updateNbPlaces(updatedPack).then(data => {
                         console.log(data);
                     })
                 })
-               api.updateEtatPanier(idPanier, 1).then(() => {
+                api.updateEtatPanier(idPanier, 1).then(() => {
                     confirm("Votre paiement a été effectué avec succès")
                     this.packs = [];
                 })
@@ -205,7 +211,7 @@ export default {
                         }, 0);
                     }
                 }
-            }, 200);
+            },500);
 
         }
 
@@ -363,5 +369,6 @@ p {
     .title {
         font-size: 23px !important;
     }
-}</style>
+}
+</style>
   

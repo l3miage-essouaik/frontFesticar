@@ -40,7 +40,7 @@
             <div v-for="(type, index) in logoDomaines" :key="index" class="inline-block mx-2 relative">
                 <div class="group">
                     <img :src="require(`../assets/${type.nomLogo}`)" class="domains-logo" />
-                    <div class="absolute inset-0 flex items-center 
+                    <div v-on:click="getBydomaine(type.nomDomaine)" class="absolute inset-0 flex items-center 
                         justify-center text-black opacity-0 group-hover:opacity-100 
                         transition-opacity duration-300 mt-20 nomDomaine">
                         {{ type.nomDomaine.charAt(0).toUpperCase() + type.nomDomaine.slice(1) }}
@@ -108,8 +108,13 @@ export default {
         }
     },
     methods: {
+        getBydomaine(domaine){
+            api.getFestivalsWithcriterias(null,null,null,null,domaine).then((data) => {
+                this.festivalsFiltered = data.data;
+            })
+        },
         getFestivalsWithCriterias() {
-            api.getFestivalsWithcriterias(this.nomFestival, this.dateDebut, null, this.prix, this.domaine.nomDomaine).then((data) => {
+            api.getFestivalsWithcriterias(this.nomFestival, this.dateDebut, this.ville, this.prix, this.domaine.nomDomaine).then((data) => {
                 this.festivalsFiltered = data.data;
             })
         },
@@ -426,4 +431,6 @@ select:focus {
     margin: 5% 0%;
     width: 10%;
 }
+
+
 </style>
